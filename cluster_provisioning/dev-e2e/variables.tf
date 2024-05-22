@@ -133,7 +133,6 @@ variable "use_grq_aws_es_private_verdi" {
 }
 
 variable "subnet_id" {
-  default = "subnet-000eb551ad06392c7"
 }
 
 variable "public_verdi_security_group_id" {
@@ -250,11 +249,9 @@ variable "autoscale" {
 # staging area vars
 
 variable "lambda_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-pcm-dev-lambda-role"
 }
 
 variable "lambda_job_type" {
@@ -297,9 +294,7 @@ variable "trace" {
 }
 
 #The value of po_daac_delivery_proxy can be
-#  arn:aws:sqs:us-west-2:871271927522:asf-w2-cumulus-dev-opera-workflow-queue
 variable "po_daac_delivery_proxy" {
-  default = "arn:aws:sns:us-west-2:681612454726:daac-proxy-for-opera"
 }
 
 variable "use_daac_cnm_r" {
@@ -311,11 +306,7 @@ variable "po_daac_endpoint_url" {
 }
 
 #The value of asf_daac_delivery_proxy can be
-# for DEV: arn:aws:sqs:us-west-2:871271927522:asf-cumulus-dev-opera-cnm-ingest-queue
-# for dev-int:
 variable "asf_daac_delivery_proxy" {
-  default = "arn:aws:sqs:us-west-2:681612454726:daac-proxy-for-opera"
-  #default = "arn:aws:sqs:us-west-2:156214815904:asf-cumulus-int-opera-cnm-ingest-queue"
 }
 
 variable "asf_daac_endpoint_url" {
@@ -332,15 +323,12 @@ variable "asg_role" {
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-b5a983cd"
 }
 
 variable "aws_account_id" {
-  default = "681612454726"
 }
 
 variable "lambda_package_release" {
@@ -485,7 +473,6 @@ variable "es_snapshot_bucket" {
 }
 
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-es-role"
 }
 
 variable "artifactory_fn_user" {
@@ -508,12 +495,6 @@ variable "earthdata_pass" {
 variable "amis" {
   type = map(string)
   default = {
-    # HySDS v5.0.1 - May 2, 2024 - R3
-    mozart    = "ami-008ab4db50135992e" # mozart v4.25 - 240502
-    metrics   = "ami-057cd64c6bf997db3" # metrics v4.17 - 240502
-    grq       = "ami-043800c909828de92" # grq v4.18 - 240502
-    factotum  = "ami-0f9f976a1a1f7621d" # factotum v4.16 - 240308
-    autoscale = "ami-01dbc66421258cc80" # verdi v4.16 patchdate - 240502
   }
 }
 

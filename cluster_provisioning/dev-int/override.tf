@@ -7,7 +7,6 @@
 
 ##### Environments #######
 variable "aws_account_id" {
-  default = "681612454726"
 }
 
 variable "venue" {
@@ -84,20 +83,16 @@ variable "profile" {
 
 ####### Subnet ###########
 variable "subnet_id" {
-  default = "subnet-000eb551ad06392c7"
 }
 
 ####### VPC #########
 variable "lambda_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-b5a983cd"
 }
 
 ##### Bucket Names #########
@@ -141,19 +136,11 @@ variable "artifactory_repo" {
 variable "amis" {
   type = map(string)
   default = {
-	# HySDS v5.0.1 - Dec 2, 2023 - R3
-    mozart    = "ami-0ea2ef3aba96651b5" # mozart v4.25 - 231202
-    metrics   = "ami-09fee089c0b2716e6" # metrics v4.17 - 231202
-    grq       = "ami-0c702e214b6e7bec9" # grq v4.18 - 231202
-    factotum  = "ami-03f76131067be5e52" # factotum v4.16 - 231204
-    autoscale = "ami-08564e7f541e12f7b" # verdi v4.16 patchdate - 231202
   }
 }
 
 ####### CNM Response job vars #######
 variable "po_daac_delivery_proxy" {
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
-  default = "arn:aws:sns:us-west-2:681612454726:daac-proxy-for-opera"
 }
 
 variable "use_daac_cnm_r" {
@@ -215,13 +202,11 @@ variable "asg_use_role" {
 
 variable "asg_role" {
   default = "am-pcm-dev-verdi-role"
-  #default = "am-pcm-verdi-role"
 }
 
 variable "pcm_cluster_role" {
   default = {
     name = "am-pcm-dev-cluster-role"
-    #name = "am-pcm-cluster-role"
     path = "/"
   }
 }
@@ -229,19 +214,15 @@ variable "pcm_cluster_role" {
 variable "pcm_verdi_role" {
   default = {
     name = "am-pcm-dev-verdi-role"
-    #name = "am-pcm-verdi-role"
     path = "/"
   }
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-pcm-dev-lambda-role"
-  #default = "arn:aws:iam::681612454726:role/am-pcm-lambda-role"
 }
 
 ##### ES ######
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-es-role"
 }
 
 variable "grq_aws_es_host" {

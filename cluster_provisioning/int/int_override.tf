@@ -7,7 +7,6 @@
 
 ##### Environments #######
 variable "aws_account_id" {
-  default = "337765570207"
 }
 
 variable "venue" {
@@ -56,26 +55,20 @@ variable "profile" {
 }
 
 variable "po_daac_delivery_proxy" {
-  default = "arn:aws:sns:us-west-2:337765570207:daac-proxy-for-opera-int"
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
 }
 
 ####### Subnet ###########
 variable "subnet_id" {
-  default = "subnet-0644c172bef1d690e"
 }
 
 ####### VPC #########
 variable "lambda_vpc" {
-  default = "vpc-07cd74102c0dfd9ab"
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-07cd74102c0dfd9ab"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-c1e0dab9"
 }
 
 variable "es_snapshot_bucket" {
@@ -85,7 +78,6 @@ variable "es_snapshot_bucket" {
 variable "trace" {
   default = "opera-int-fwd"
 }
-
 
 variable "artifactory_repo" {
   default = "general-stage"
@@ -121,12 +113,10 @@ variable "pcm_verdi_role" {
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::337765570207:role/am-pcm-lambda-role"
 }
 
 ##### ES ######
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::337765570207:role/am-es-role"
 }
 
 variable "grq_aws_es_host" {

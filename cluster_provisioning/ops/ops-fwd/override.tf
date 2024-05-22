@@ -14,15 +14,12 @@ variable "clear_s3_aws_es" {
 
 ###### Security  ########
 variable "public_verdi_security_group_id" {
-  default = "sg-09e617d8d3e708df2"
 }
 
 variable "private_verdi_security_group_id" {
-  default = "sg-0a42f42f56f358971"
 }
 
 variable "cluster_security_group_id" {
-  default = "sg-029c5fb30fd2f3876"
 }
 
 
@@ -73,15 +70,9 @@ variable "trace" {
 
 ####### CNM Response job vars #######
 variable "po_daac_delivery_proxy" {
-  default = "arn:aws:sns:us-west-2:234498297282:podaac-ops-cumulus-throttled-provider-input-sns"
-  #"arn:aws:sns:us-west-2:907504701509:daac-proxy-for-opera-ops"
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
 }
 
 variable "asf_daac_delivery_proxy" {
-  default =  "arn:aws:sqs:us-west-2:510296831643:asf-cumulus-prod-opera-cnm-ingest-queue"
-  #"arn:aws:sns:us-west-2:907504701509:daac-proxy-for-opera-ops"
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
 }
 
 variable "grq_aws_es_host" {

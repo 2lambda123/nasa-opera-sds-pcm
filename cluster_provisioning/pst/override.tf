@@ -7,7 +7,6 @@
 
 ##### Environments #######
 variable "aws_account_id" {
-  default = "483785460105"
 }
 
 variable "venue" {
@@ -52,15 +51,12 @@ variable "clear_s3_aws_es" {
 
 ###### Security  ########
 variable "public_verdi_security_group_id" {
-  default = "sg-01b0d3772049cc263"
 }
 
 variable "private_verdi_security_group_id" {
-  default = "sg-03eed53cf8fbfea3a"
 }
 
 variable "cluster_security_group_id" {
-  default = "sg-070b0cf50df41767f"
 }
 
 
@@ -89,20 +85,16 @@ variable "profile" {
 
 ####### Subnet ###########
 variable "subnet_id" {
-  default = "subnet-005726c648910667e"
 }
 
 ####### VPC #########
 variable "lambda_vpc" {
-  default = "vpc-09690c3880fda922e"
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-09690c3880fda922e"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-0ac48391a96eb1291"
 }
 
 
@@ -175,20 +167,15 @@ variable "pcm_verdi_role" {
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::483785460105:role/am-pcm-lambda-role"
 }
 
 ##### ES ######
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::483785460105:role/am-es-role"
 }
 
 ####### CNM Response job vars #######
 variable "po_daac_delivery_proxy" {
-  default = "arn:aws:sns:us-west-2:483785460105:daac-proxy-for-opera-pst"
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
 }
-
 
 variable "grq_aws_es_host" {
   default = ""

@@ -12,18 +12,12 @@ variable "counter" {
 
 ###### Security  ########
 variable "public_verdi_security_group_id" {
-  # pop1 security group
-  default = "sg-06bf23a69b4d83f66"
 }
 
 variable "private_verdi_security_group_id" {
-  # pop1 security group
-  default = "sg-045ff9d3d16a65ba4"
 }
 
 variable "cluster_security_group_id" {
-  # pop1 security group
-  default = "sg-0958a845b83c5b857"
 }
 
 variable "private_key_file" {

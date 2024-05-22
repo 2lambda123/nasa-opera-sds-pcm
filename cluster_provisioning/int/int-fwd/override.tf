@@ -18,18 +18,12 @@ variable "cluster_type" {
 
 ###### Security  ########
 variable "public_verdi_security_group_id" {
-  # fwd security group
-  default = "sg-0e60f417ff3c769fb"
 }
 
 variable "private_verdi_security_group_id" {
-  # fwd security group
-  default = "sg-0869719f04e735bd6"
 }
 
 variable "cluster_security_group_id" {
-  # fwd security group
-  default = "sg-039db67f56d1b12f0"
 }
 
 variable "private_key_file" {

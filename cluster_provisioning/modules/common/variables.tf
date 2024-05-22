@@ -132,12 +132,6 @@ variable "purge_es_snapshot" {
 variable "amis" {
   type = map(string)
   default = {
-    # HySDS v5.0.1 - May 2, 2024 - R3
-    mozart    = "ami-008ab4db50135992e" # mozart v4.25 - 240502
-    metrics   = "ami-057cd64c6bf997db3" # metrics v4.17 - 240502
-    grq       = "ami-043800c909828de92" # grq v4.18 - 240502
-    factotum  = "ami-0f9f976a1a1f7621d" # factotum v4.16 - 240308
-    autoscale = "ami-01dbc66421258cc80" # verdi v4.16 patchdate - 240502
   }
 }
 
@@ -169,8 +163,6 @@ variable "lambda_role_arn" {
 }
 
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-es-role"
-  #  default = "arn:aws:iam::271039147104:role/am-es-role"
 }
 
 variable "es_snapshot_bucket" {
@@ -535,10 +527,6 @@ variable "use_daac_cnm_r" {
 variable "cnm_r_sqs_arn" {
   type = map(string)
   default = {
-    dev  = "arn:aws:sqs:us-west-2:681612454726:opera-dev-daac-cnm-response"
-    int  = "arn:aws:sqs:us-west-2:681612454726:opera-dev-fwd-daac-cnm-response"
-    test = "arn:aws:sqs:us-west-2:337765570207:opera-int-daac-cnm-response"
-    prod = "arn:aws:sqs:us-west-2:907504701509:opera-ops-daac-cnm-response"
   }
 }
 

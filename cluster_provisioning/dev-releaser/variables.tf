@@ -133,7 +133,6 @@ variable "use_grq_aws_es_private_verdi" {
 }
 
 variable "subnet_id" {
-  default = "subnet-000eb551ad06392c7"
 }
 
 variable "public_verdi_security_group_id" {
@@ -250,11 +249,9 @@ variable "autoscale" {
 # staging area vars
 
 variable "lambda_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::681612454726:role/am-pcm-dev-lambda-role"
 }
 
 variable "lambda_job_type" {
@@ -296,8 +293,6 @@ variable "trace" {
 }
 
 variable "po_daac_delivery_proxy" {
-  default = "arn:aws:sns:us-west-2:681612454726:daac-proxy-for-opera"
-  #default = "arn:aws:sns:us-west-2:638310961674:podaac-uat-cumulus-provider-input-sns"
 }
 
 variable "use_daac_cnm_r" {
@@ -309,7 +304,6 @@ variable "po_daac_endpoint_url" {
 }
 
 variable "asf_daac_delivery_proxy" {
-  default = "arn:aws:sqs:us-west-2:681612454726:daac-proxy-for-opera"
 }
 
 variable "asf_daac_endpoint_url" {
@@ -326,15 +320,12 @@ variable "asg_role" {
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-02676637ea26098a7"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-b5a983cd"
 }
 
 variable "aws_account_id" {
-  default = "681612454726"
 }
 
 variable "lambda_package_release" {

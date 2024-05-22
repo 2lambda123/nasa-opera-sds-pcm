@@ -7,7 +7,6 @@
 
 ##### Environments #######
 variable "aws_account_id" {
-  default = "907504701509"
 }
 
 variable "venue" {
@@ -23,7 +22,7 @@ variable "environment" {
 }
 
 variable "crid" {
-  default = "T00100"
+  default = "O00100"
 }
 
 variable "project" {
@@ -55,20 +54,16 @@ variable "profile" {
 
 ####### Subnet ###########
 variable "subnet_id" {
-  default = "subnet-0009fde6de693b714"
 }
 
 ####### VPC #########
 variable "lambda_vpc" {
-  default = "vpc-04ce247929cd21150"
 }
 
 variable "public_asg_vpc" {
-  default = "vpc-04ce247929cd21150"
 }
 
 variable "private_asg_vpc" {
-  default = "vpc-05d9f741bae3208ab"
 }
 
 variable "artifactory_repo" {
@@ -104,12 +99,10 @@ variable "pcm_verdi_role" {
 }
 
 variable "lambda_role_arn" {
-  default = "arn:aws:iam::907504701509:role/am-pcm-lambda-role"
 }
 
 ##### ES ######
 variable "es_bucket_role_arn" {
-  default = "arn:aws:iam::907504701509:role/am-es-role"
 }
 
 # mozart vars

@@ -6,10 +6,6 @@
 #
 
 ##### Environments #######
-variable "aws_account_id" {
-  default = "681612454726"
-}
-
 variable "venue" {
   default = "dev"
 }
@@ -44,22 +40,6 @@ variable "cluster_type" {
   default = "reprocessing"
 }
 
-###### Security  ########
-variable "public_verdi_security_group_id" {
-  # fwd security group
-  default = "sg-0471b65df42e14c41"
-}
-
-variable "private_verdi_security_group_id" {
-  # fwd security group
-  default = "sg-00486f537748ee592"
-}
-
-variable "cluster_security_group_id" {
-  # fwd security group
-  default = "sg-0a9f461fb764bf2ec"
-}
-
 variable "private_key_file" {
   default = "~/.ssh/opera-dev-fwd.pem"
 }
@@ -81,24 +61,6 @@ variable "shared_credentials_file" {
 #
 variable "profile" {
   default = "saml-pub"
-}
-
-####### Subnet ###########
-variable "subnet_id" {
-  default = "subnet-000eb551ad06392c7"
-}
-
-####### VPC #########
-variable "lambda_vpc" {
-  default = "vpc-02676637ea26098a7"
-}
-
-variable "public_asg_vpc" {
-  default = "vpc-02676637ea26098a7"
-}
-
-variable "private_asg_vpc" {
-  default = "vpc-b5a983cd"
 }
 
 ##### Bucket Names #########
@@ -189,5 +151,3 @@ variable "factotum" {
     publicc_ip    = ""
   }
 }
-
-
