@@ -129,10 +129,17 @@ variable "purge_es_snapshot" {
 }
 
 # ami vars
+#variable "amis" {
+#  type = map(string)
+#  default = {
+#    mozart    = ""
+#    metrics   = ""
+#    grq       = ""
+#    factotum  = ""
+#    autoscale = ""
+#  }
+#}
 variable "amis" {
-  type = map(string)
-  default = {
-  }
 }
 
 variable "mozart" {

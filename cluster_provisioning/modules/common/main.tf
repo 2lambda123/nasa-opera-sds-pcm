@@ -63,7 +63,8 @@ locals {
   enable_query_timer          = var.cluster_type == "reprocessing" ? false : true
   enable_download_timer       = false
 
-  delete_old_job_catalog = true
+  delete_old_job_catalog      = true
+  amis                        = var.amis
 }
 resource "null_resource" "download_lambdas" {
   provisioner "local-exec" {

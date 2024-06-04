@@ -254,6 +254,9 @@ variable "lambda_vpc" {
 variable "lambda_role_arn" {
 }
 
+variable "es_bucket_role_arn" {
+}
+
 variable "lambda_job_type" {
   default = "INGEST_STAGED"
 }
@@ -491,12 +494,14 @@ variable "earthdata_user" {
 variable "earthdata_pass" {
 }
 
-# ami vars
 variable "amis" {
   type = map(string)
   default = {
   }
 }
+
+variable "cnm_r_sqs_arn" {
+} 
 
 variable "es_user" {}
 

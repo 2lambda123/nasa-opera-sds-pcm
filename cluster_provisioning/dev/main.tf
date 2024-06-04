@@ -48,6 +48,7 @@ module "common" {
   lambda_role_arn                         = var.lambda_role_arn
   lambda_job_type                         = var.lambda_job_type
   lambda_job_queue                        = var.lambda_job_queue
+  es_bucket_role_arn                      = var.es_bucket_role_arn
   cnm_r_handler_job_type                  = var.cnm_r_handler_job_type
   cnm_r_job_queue                         = var.cnm_r_job_queue
   po_daac_cnm_r_event_trigger             = var.po_daac_cnm_r_event_trigger
@@ -99,6 +100,7 @@ module "common" {
   dataspace_pass                          = var.dataspace_pass
   earthdata_user                          = var.earthdata_user
   earthdata_pass                          = var.earthdata_pass
+  amis                                    = var.amis
 }
 
 locals {
