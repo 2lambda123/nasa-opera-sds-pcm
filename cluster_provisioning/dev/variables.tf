@@ -309,8 +309,6 @@ variable "po_daac_endpoint_url" {
   default = ""
 }
 
-#The value of asf_daac_delivery_proxy can be
-#  arn:aws:sqs:us-west-2:871271927522:asf-w2-cumulus-dev-opera-workflow-queue
 # need to get SNS arn from ASF DAAC and define
 variable "asf_daac_delivery_proxy" {
 }
