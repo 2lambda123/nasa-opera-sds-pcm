@@ -406,6 +406,33 @@ def mark_pending_download_job_submitted(es, doc_id, download_job_id):
         }
     )
 
+def determine_submitted_retrigger(submitted_granules, download_batch, batch_id, len_burst_ids):
+    '''Determine if we should retrigger a previously submitted batch '''
+
+    if len(submitted_granules) == 0:
+        return
+    trigger_this_batch = False
+    new_bursts = {}
+    batch_download_granules = {}
+    for download in download_batch.values():
+        new_bursts[download["burst_id"]] = download
+    for submitted_grn in submitted_granules:
+        burst_id = submitted_grn["burst_id"]
+        if burst_id in new_bursts:
+            if new_bursts[burst_id]["creation_ts"] > submitted_grn["creation_ts"]:
+                trigger_this_batch = True
+                batch_download_granules[burst_id] = new_bursts[burst_id]
+        else:
+            batch_download_granules[burst_id] = submitted_grn
+
+    if trigger_this_batch == True:
+        if len(batch_download_granules) < len_burst_ids:
+            logger.info(
+                f"Some of the granules used in previously triggering {batch_id=} are missing. Will retrieve them from CMR")
+            # TODO above
+
+    return trigger_this_batch, batch_download_granules
+
 def parse_cslc_burst_id(native_id):
 
     burst_id, _ = parse_cslc_file_name(native_id)
