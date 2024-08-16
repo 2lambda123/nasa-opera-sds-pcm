@@ -325,8 +325,8 @@ def parse_cslc_native_id(native_id, burst_to_frames, frame_to_bursts):
 
     return burst_id, acquisition_dts, acquisition_cycles, frame_ids
 
-def save_blocked_download_job(eu, release_version, product_type, params, job_queue, job_name,
-                              frame_id, acq_index, k, m, batch_ids):
+def save_pending_download_job(eu, release_version, product_type, params, job_queue, job_name,
+                              frame_id, acq_index, k, m, batch_ids, acq_time_list = None):
     """Save the blocked download job in the ES index"""
 
     eu.index_document(
@@ -346,6 +346,7 @@ def save_blocked_download_job(eu, release_version, product_type, params, job_que
                 "m": m,
                 "batch_ids": batch_ids,
                 "submitted": False,
+                "acq_time_list": acq_time_list,
                 "submitted_job_id": None
         }
     )
@@ -370,6 +371,9 @@ def get_pending_download_jobs(es):
         return []
 
     return result
+
+def ecmwf_satisfied(acq_time_list):
+    return False
 
 def mark_pending_download_job_submitted(es, doc_id, download_job_id):
     return es.update_document(

@@ -13,7 +13,8 @@ from data_subscriber.cmr import get_cmr_token
 from data_subscriber.parser import create_parser
 from data_subscriber.query import submit_download_job
 from data_subscriber import es_conn_util
-from cslc_utils import get_pending_download_jobs, localize_disp_frame_burst_hist, mark_pending_download_job_submitted, CSLCDependency
+from cslc_utils import (get_pending_download_jobs, localize_disp_frame_burst_hist, mark_pending_download_job_submitted,
+                        CSLCDependency, ecmwf_satisfied)
 from data_subscriber.cslc.cslc_catalog import CSLCProductCatalog
 
 
@@ -64,14 +65,31 @@ def run(argv: list[str]):
         frame_id = job['_source']['frame_id']
         acq_index = job['_source']['acq_index']
 
+        do_submit_job = True
+
         cslc_dependency = CSLCDependency(k, m, disp_burst_map, query_args, token, cmr, settings)
 
         # Check if the compressed cslc has been generated
         logger.info("Evaluating for frame_id: %s, acq_index: %s, k: %s, m: %s", frame_id, acq_index, k, m)
         if cslc_dependency.compressed_cslc_satisfied(frame_id, acq_index, es):
-            logger.info("Compressed CSLC satisfied for frame_id: %s, acq_index: %s. Submitting CSLC download job",
-                        frame_id, acq_index)
+            logger.info("Compressed CSLC satisfied for frame_id: %s, acq_index: %s.",frame_id, acq_index)
+        else:
+            logger.info("Compressed CSLC NOT satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+            do_submit_job = False
 
+        if "acq_time_list" in job['_source']:
+            logger.info("Evaluating ECMWF availability")
+            if ecmwf_satisfied(frame_id, acq_index, es):
+                logger.info("ECMWF satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+            else:
+                logger.info("ECMWF NOT satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+                #TODO: Print out individual acquisition time windows for which ECMWF is not satisfied
+                do_submit_job = False
+        else:
+            logger.info("ECMWF files have already been satisfied")
+
+        if do_submit_job:
+            logger.info("Submitting job")
             download_job_id = submit_download_job(release_version=job['_source']['release_version'],
                     product_type=job['_source']['product_type'],
                     params=job['_source']['job_params'],
@@ -87,8 +105,7 @@ def run(argv: list[str]):
 
             job_submission_tasks.append(download_job_id)
 
-        else:
-            logger.info("Compressed CSLC NOT satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+
 
     logger.info(f"Submitted {len(job_submission_tasks)} CSLC Download Jobs {job_submission_tasks}")
 
