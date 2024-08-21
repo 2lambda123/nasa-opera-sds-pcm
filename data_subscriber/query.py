@@ -269,10 +269,14 @@ class CmrQuery:
                 # Create list of the earliest acquisition times for each batch. Each batch corresponds to a k
                 for batch_id, urls in batch_chunk:
 
-                    #TODO: find the earliest acquisition time for each batch
-                    filename = Path(list(urls)[0]).name[:-3]
-                    _, acq_time = parse_cslc_file_name(filename)
-                    acq_time_list.append(acq_time)
+                    # Find the earliest acquisition time for each batch and append
+                    earliest_acq_time = "99990822T123331Z" # Yes, this is year 9999!
+                    for url in list(urls):
+                        filename = Path(url).name[:-3]
+                        _, acq_time = parse_cslc_file_name(filename)
+                        if acq_time < earliest_acq_time: # Time is in format YYYYMMDDTHHMMSSZ so this comparison works
+                            earliest_acq_time = acq_time
+                    acq_time_list.append(earliest_acq_time)
 
                 frame_id = split_download_batch_id(chunk_batch_ids[0])[0]
                 acq_indices = [split_download_batch_id(chunk_batch_id)[1] for chunk_batch_id in chunk_batch_ids]

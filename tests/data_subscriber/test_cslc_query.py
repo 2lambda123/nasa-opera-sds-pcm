@@ -6,6 +6,7 @@ import conftest
 from data_subscriber import cslc_utils
 from data_subscriber.parser import create_parser
 from data_subscriber.cslc import cslc_query
+from data_subscriber.submit_pending_jobs import condition_satisfied
 from datetime import datetime
 from data_subscriber.cmr import DateTimeRange
 
@@ -71,3 +72,8 @@ def test_reprocessing_by_dates():
     assert args.start_date == '2021-01-24T23:00:00Z'
     assert args.end_date == '2021-01-25T00:00:00Z'
     assert args.proc_mode == 'reprocessing'
+
+@pytest.mark.skip
+def test_pending_job_condition_satisfied():
+    ''' Tests condition_satisfied function in submit_pending_jobs module'''
+    pass

@@ -373,6 +373,9 @@ def get_pending_download_jobs(es):
     return result
 
 def ecmwf_satisfied(acq_time_list):
+    for acq_time in acq_time_list:
+        # TODO: perform actual lookup
+        logger.info(f"Looking up ECMWF for acquisition time: {acq_time}")
     return False
 
 def mark_pending_download_job_submitted(es, doc_id, download_job_id):
