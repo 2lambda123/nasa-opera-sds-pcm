@@ -1,0 +1,16 @@
+{ "description": "This file specifies expected files to be downloaded in a DISP-S1 re-processing scenario",
+  "comment": "Reprocessing by date range and frame_id",
+  "processing_mode": "reprocessing",
+  "param_type": "date_range",
+  "frame_id": 34996,
+  "k": 4,
+  "m": 1,
+  "validation_data": {
+    "2024-06-05T02:00:00Z, 2024-06-05T02:30:11Z": {
+      "f34996_a2784": 27,
+      "f34996_a2772": 27,
+      "f34996_a2760": 27,
+      "f34996_a2748": 27
+    }
+  }
+}
