@@ -1,21 +1,21 @@
 import argparse
 import concurrent.futures
+import json
+import logging
 import multiprocessing
 import random
 import re
 import sqlite3
-import time
 import sys
-import requests
-import json
-
-from requests import get
-import pandas as pd
-from tabulate import tabulate
-import tqdm
-from urllib.parse import urlencode
-import logging
+import time
 from datetime import datetime, timedelta
+from urllib.parse import urlencode
+
+import pandas as pd
+import requests
+import tqdm
+from requests import get
+from tabulate import tabulate
 
 # Constants
 CMR_GRANULES_API_ENDPOINT = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
