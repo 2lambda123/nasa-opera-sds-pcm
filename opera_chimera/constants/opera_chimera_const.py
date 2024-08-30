@@ -2,6 +2,7 @@ from chimera.commons.constants import ChimeraConstants
 
 
 class OperaChimeraConstants(ChimeraConstants):
+    """ """
     def __init__(self):
         ChimeraConstants.__init__(self)
 

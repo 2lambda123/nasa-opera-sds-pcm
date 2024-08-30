@@ -22,24 +22,44 @@ from opera_chimera.precondition_functions import OperaPreConditionFunctions
 
 
 class MockGdal:
-    """
-    Mock class for the osgeo.gdal module for use with testing ancillary data staging
+    """Mock class for the osgeo.gdal module for use with testing ancillary data staging
     precondition functions (get_dems,get_worldcover)
+
+
     """
 
     GA_ReadOnly = 0
 
     @staticmethod
     def UseExceptions(*args):
+        """
+
+        :param *args: 
+
+        """
         pass
 
     @staticmethod
     def Translate(destName, srcDS, **kwargs):
+        """
+
+        :param destName: 
+        :param srcDS: 
+        :param **kwargs: 
+
+        """
         with open(destName, "w") as outfile:
             outfile.write("fake output data")
 
     @staticmethod
     def BuildVRT(destName, srcDSOrSrcDSTab, **kwargs):
+        """
+
+        :param destName: 
+        :param srcDSOrSrcDSTab: 
+        :param **kwargs: 
+
+        """
         with open(destName, "w") as outfile:
             outfile.write("fake vrt data")
 
@@ -48,10 +68,17 @@ class MockGdal:
         """Mock class for gdal.Dataset objects, as returned from an Open call."""
 
         def GetGeoTransform(self):
+            """ """
             return 1, 1, 1, 1, 1, 1
 
         def GetRasterBand(self, index):
+            """
+
+            :param index: 
+
+            """
             class MockRasterBand:
+                """ """
                 def __init__(self):
                     self.XSize = 1
                     self.YSize = 1
@@ -60,14 +87,22 @@ class MockGdal:
 
     @staticmethod
     def Open(filename, filemode=None):
-        """Mock implementation for gdal.Open. Returns an instance of the mock Dataset."""
+        """Mock implementation for gdal.Open. Returns an instance of the mock Dataset.
+
+        :param filename: 
+        :param filemode:  (Default value = None)
+
+        """
         return MockGdal.MockGdalDataset()
 
 
 def _check_aws_connection_patch(bucket, key):
-    """
-    No-op patch function for use with testing precondition functions that attempt
+    """No-op patch function for use with testing precondition functions that attempt
     AWS access
+
+    :param bucket: 
+    :param key: 
+
     """
     pass
 
@@ -75,19 +110,28 @@ def _check_aws_connection_patch(bucket, key):
 def _object_download_file_patch(
     self, Filename, ExtraArgs=None, Callback=None, Config=None
 ):
-    """Patch for the boto3.s3.inject.object_download_file function"""
+    """Patch for the boto3.s3.inject.object_download_file function
+
+    :param Filename: 
+    :param ExtraArgs:  (Default value = None)
+    :param Callback:  (Default value = None)
+    :param Config:  (Default value = None)
+
+    """
     # Create a dummy file in the expected location to simulate download
     with open(Filename, "w") as outfile:
         outfile.write("fake ancillary data\n__PATTERN1__\n__PATTERN2__")
 
 
 class MockCollectionManager:
-    """
-    Mock class for boto3.resources.collection.CollectionManager for use with
+    """Mock class for boto3.resources.collection.CollectionManager for use with
     tests that filter on s3 objects to locate an ancillary file
+
+
     """
 
     class MockS3Object:
+        """ """
         def __init__(self):
             self.key = None
 
@@ -95,6 +139,11 @@ class MockCollectionManager:
         self.s3_object = self.MockS3Object()
 
     def filter(self, **kwargs):
+        """
+
+        :param **kwargs: 
+
+        """
         self.s3_object.key = "fake/key/to/S1A_OPER_AUX_RESORB_OPOD.EOF"
 
         return [self.s3_object]
@@ -104,6 +153,7 @@ class TestOperaPreConditionFunctions(unittest.TestCase):
     """Unit tests for the opera_chimera.precondition_functions module"""
 
     def setUp(self) -> None:
+        """ """
         # Create a temporary working directory
         self.working_dir = tempfile.TemporaryDirectory(
             suffix="_temp", prefix="test_precondition_functions_"
@@ -117,6 +167,7 @@ class TestOperaPreConditionFunctions(unittest.TestCase):
             json.dump({"args": [self.working_dir.name + "/"]}, outfile)
 
     def tearDown(self) -> None:
+        """ """
         os.chdir(self.start_dir)
         self.working_dir.cleanup()
 
@@ -910,9 +961,7 @@ class TestOperaPreConditionFunctions(unittest.TestCase):
             self.assertTrue(exists(rc_params[oc_const.ALGORITHM_PARAMETERS]))
 
     def test_get_disp_s1_troposphere_files(self):
-        """
-        Unit tests for the get_disp_s1_troposphere_files() precondition function.
-        """
+        """Unit tests for the get_disp_s1_troposphere_files() precondition function."""
         context = {
             "product_metadata": {
                 "metadata": {
@@ -1011,9 +1060,10 @@ class TestOperaPreConditionFunctions(unittest.TestCase):
         )
 
     def test_instantiate_algorithm_parameters_template(self):
-        """
-        Unit tests for the instantiate_algorithm_parameters_template()
+        """Unit tests for the instantiate_algorithm_parameters_template()
         precondition function
+
+
         """
         # Use the mock object download file function to write a dummy algorithm parameters file
         parameter_file = os.path.join(

@@ -11,6 +11,11 @@ from util.ecmwf_util import (check_s3_for_ecmwf, ecmwf_key_for_datetime,
 
 
 def test_check_s3_for_ecmwf(caplog):
+    """
+
+    :param caplog: 
+
+    """
     # Test with valid result from s3_client.head_object()
     mock_head_object = MagicMock()
 
@@ -53,6 +58,7 @@ def test_check_s3_for_ecmwf(caplog):
 
 
 def test_ecmwf_key_for_datetime():
+    """ """
     TestCase = namedtuple("TestCase", ["datetime", "expected_ecmwf_key"])
 
     # Setup test cases that hit each 6 hour time quadrant
@@ -76,6 +82,7 @@ def test_ecmwf_key_for_datetime():
 
 
 def test_find_ecmwf_for_datetime():
+    """ """
     TestCase = namedtuple("TestCase", ["datetime", "expected_ecmwf_uri"])
 
     # Setup test cases that hit each 6 hour time quadrant

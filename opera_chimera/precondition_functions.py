@@ -37,6 +37,7 @@ from util.pge_util import (download_object_from_s3, get_disk_usage,
 
 
 class OperaPreConditionFunctions(PreConditionFunctions):
+    """ """
     def __init__(self, context, pge_config, settings, job_params):
         PreConditionFunctions.__init__(self, context, pge_config, settings, job_params)
 
@@ -84,6 +85,7 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_cnm_version(self):
+        """ """
         # we may need to choose different CNM data version for different product types
         # for now, it is set as CNM_VERSION in settings.yaml
         cnm_version = self._settings.get(oc_const.CNM_VERSION)
@@ -91,9 +93,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return {"cnm_version": cnm_version}
 
     def get_cslc_product_specification_version(self):
-        """
-        Returns the appropriate product spec version for a CSLC-S1 job based
+        """Returns the appropriate product spec version for a CSLC-S1 job based
         on the workflow (baseline vs. static layer).
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -130,10 +132,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_algorithm_parameters(self):
-        """
-        Gets the S3 path to the designated algorithm parameters runconfig for use
+        """Gets the S3 path to the designated algorithm parameters runconfig for use
         with a DISP-S1 job. Takes processing mode into account (forward vs historical)
         to determine the correct parameters to load.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -169,11 +172,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_amplitude_dispersion_files(self):
-        """
-        Derives the list of S3 paths to the amplitude dispersion files to be
+        """Derives the list of S3 paths to the amplitude dispersion files to be
         used with a DISP-S1 job.
-
+        
         TODO: currently a stub, implement once source of dispersion files is determined
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -184,11 +188,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_amplitude_mean_files(self):
-        """
-        Derives the list of S3 paths to the amplitude mean files to be used with
+        """Derives the list of S3 paths to the amplitude mean files to be used with
         a  DISP-S1 job.
-
+        
         TODO: currently a stub, implement once source of mean files is determined
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -199,9 +204,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_compressed_cslc_files(self):
-        """
-        Derives the list of S3 paths to the ionosphere files to be used with a
+        """Derives the list of S3 paths to the ionosphere files to be used with a
         DISP-S1 job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -216,9 +222,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_dem(self):
-        """
-        This function downloads a DEM sub-region over the bounding box provided
+        """This function downloads a DEM sub-region over the bounding box provided
         in the input product metadata for a DISP-S1 processing job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -273,9 +280,7 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_frame_id(self):
-        """
-        Assigns the frame ID to the RunConfig for DISP-S1 PGE jobs.
-        """
+        """Assigns the frame ID to the RunConfig for DISP-S1 PGE jobs."""
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
@@ -288,9 +293,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_ionosphere_files(self):
-        """
-        Derives the list of S3 paths to the ionosphere files to be used with a
+        """Derives the list of S3 paths to the ionosphere files to be used with a
         DISP-S1 job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -305,9 +311,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_mask_file(self):
-        """
-        This function downloads a sub-region of the water mask used with DISP-S1
+        """This function downloads a sub-region of the water mask used with DISP-S1
         processing over the bounding box provided in the input product metadata.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -363,9 +370,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_num_workers(self):
-        """
-        Determines the number of workers/cores to assign to an DISP-S1 job as a
+        """Determines the number of workers/cores to assign to an DISP-S1 job as a
         fraction of the total available.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -396,9 +403,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_polarization(self):
-        """
-        Determines the polarization value of the CSLC-S1 products used with a
+        """Determines the polarization value of the CSLC-S1 products used with a
         DISP-S1 job
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -448,9 +456,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_product_type(self):
-        """
-        Assigns the product type (forward/historical) to the RunConfig for
+        """Assigns the product type (forward/historical) to the RunConfig for
         DISP-S1 PGE jobs.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -469,9 +478,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_save_compressed_slc(self):
-        """
-        Assigns the save_compressed_slc flag based on the value passed to the
+        """Assigns the save_compressed_slc flag based on the value passed to the
         job from the CSLC download job
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -486,9 +496,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_static_layers_files(self):
-        """
-        Derives the S3 paths to the CSLC static layer files to be used with a
+        """Derives the S3 paths to the CSLC static layer files to be used with a
         DISP-S1 job.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -504,9 +514,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_disp_s1_troposphere_files(self):
-        """
-        Derives the S3 paths to the Troposphere (ECMWF) files to be used with a
+        """Derives the S3 paths to the Troposphere (ECMWF) files to be used with a
         DISP-S1 job.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -583,10 +593,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_hls_dem(self):
-        """
-        This function downloads dems over the bbox provided in the PGE yaml config,
+        """This function downloads dems over the bbox provided in the PGE yaml config,
         or derives the appropriate bbox based on the tile code of the product's
         metadata (if available).
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -696,12 +707,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return {"L2_HLS": product_paths}
 
     def get_dswx_ni_sample_inputs(self):
-        """
-        Temporary function to stage the "golden" inputs for use with the DSWx-NI
+        """Temporary function to stage the "golden" inputs for use with the DSWx-NI
         PGE.
         TODO: this function will eventually be phased out as functions to
               acquire the appropriate input files are implemented with future
               releases
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -764,9 +776,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_algorithm_parameters(self):
-        """
-        Downloads the designated algorithm parameters runconfig from S3 for use
+        """Downloads the designated algorithm parameters runconfig from S3 for use
         with a DSWx-S1 job
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -793,9 +806,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_dem(self):
-        """
-        This function downloads a DEM sub-region over the bounding box provided
+        """This function downloads a DEM sub-region over the bounding box provided
         in the input product metadata for a DSWx-S1 processing job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -850,9 +864,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_dynamic_ancillary_maps(self):
-        """
-        Utilizes the stage_ancillary_map.py script to stage the sub-regions for
+        """Utilizes the stage_ancillary_map.py script to stage the sub-regions for
         each of the ancillary maps used by DSWx-S1 (excluding the DEM).
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -919,9 +934,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_inundated_vegetation_enabled(self):
-        """
-        Determines the setting for the inundated vegetation enabled flag for
+        """Determines the setting for the inundated vegetation enabled flag for
         DSWx-S1 processing, based on the set of input RTC granules to be processed.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -964,9 +980,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_mgrs_collection_id(self):
-        """
-        Inserts the MGRS collection ID from the job metadata into the RunConfig
+        """Inserts the MGRS collection ID from the job metadata into the RunConfig
         for use with a DSWx-S1 job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -983,9 +1000,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_dswx_s1_num_workers(self):
-        """
-        Determines the number of workers/cores to assign to an DSWx-S1 job as a
+        """Determines the number of workers/cores to assign to an DSWx-S1 job as a
         function of the total available.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1006,6 +1023,7 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_gpu_enabled(self):
+        """ """
         logger.info("Calling {} pre-condition function".format(oc_const.GPU_ENABLED))
 
         # read in SciFlo work unit json file and extract work directory
@@ -1030,9 +1048,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return {oc_const.GPU_ENABLED: gpu_enabled}
 
     def get_landcover(self):
-        """
-        Copies the static landcover file configured for use with a DSWx-HLS job
+        """Copies the static landcover file configured for use with a DSWx-HLS job
         to the job's local working area.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1061,11 +1080,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_metadata(self):
-        """
-        Returns a dict with only the key: value pair for keys in 'keys' from the
+        """Returns a dict with only the key: value pair for keys in 'keys' from the
         input_context
-
+        
         :return: dict or raises error if not found
+
+
         """
         logger.info("Evaluating precondition {}".format(oc_const.GET_METADATA))
         keys = self._pge_config.get(oc_const.GET_METADATA).get("keys")
@@ -1089,9 +1109,14 @@ class OperaPreConditionFunctions(PreConditionFunctions):
     def get_opera_ancillary(
         self, ancillary_type, output_filepath, staging_func, staging_func_args
     ):
-        """
-        Handles common operations for obtaining ancillary data used with OPERA
+        """Handles common operations for obtaining ancillary data used with OPERA
         PGE processing
+
+        :param ancillary_type: 
+        :param output_filepath: 
+        :param staging_func: 
+        :param staging_func_args: 
+
         """
         pge_metrics = {"download": [], "upload": []}
 
@@ -1129,11 +1154,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
     # TODO: multiple functions with this name across OPERA PCM, can they be
     #       consolidated?
     def get_product_metadata(self):
-        """
-        To get the metadata that was extracted from the products generated by the
+        """To get the metadata that was extracted from the products generated by the
         previous PGE run
-
+        
         :return:
+
+
         """
         logger.info("Evaluating precondition {}".format(oc_const.GET_PRODUCT_METADATA))
         try:
@@ -1191,10 +1217,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_rtc_s1_estimated_geometric_accuracy_values(self):
-        """
-        Returns the estimated geometric accuracy values from settings.yaml
+        """Returns the estimated geometric accuracy values from settings.yaml
         for inclusion in the instantiated RTC-S1 RunConfig. These values are
         needed for CEOS metadata compliance.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1225,9 +1251,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_rtc_s1_num_workers(self):
-        """
-        Determines the number of workers/cores to assign to an RTC-S1 job as a
+        """Determines the number of workers/cores to assign to an RTC-S1 job as a
         fraction of the total available.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1248,9 +1274,9 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_rtc_s1_static_num_workers(self):
-        """
-        Determines the number of workers/cores to assign to an RTC-S1-STATIC job
+        """Determines the number of workers/cores to assign to an RTC-S1-STATIC job
         as a fraction of the total available.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1271,9 +1297,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_s3_input_filepaths(self):
-        """
-        Gets the set of input S3 file paths that comprise the set of products
+        """Gets the set of input S3 file paths that comprise the set of products
         to be processed by a DSWx-S1/DISP-S1 PGE job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1294,9 +1321,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_shoreline_shapefiles(self):
-        """
-        Copies the set of static shoreline shapefiles configured for use with a
+        """Copies the set of static shoreline shapefiles configured for use with a
         DSWx-HLS job to the job's local working area.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1340,9 +1368,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_polarization(self):
-        """
-        Determines the polarization setting for the CSLC-S1 or RTC-S1 job based
+        """Determines the polarization setting for the CSLC-S1 or RTC-S1 job based
         on the file name of the input SLC granule.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1379,9 +1408,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_s1_burst_database(self):
-        """
-        Copies the static burst database file configured for use with an SLC-based
+        """Copies the static burst database file configured for use with an SLC-based
         job to the job's local working area.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1412,13 +1442,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_s1_dem(self):
-        """
-        Stages a DEM file corresponding to the region covered by an input
+        """Stages a DEM file corresponding to the region covered by an input
         S1 SLC SAFE archive.
-
+        
         The manifest.safe file is extracted from the archive and used to
         determine the lat/lon bounding box of the S1 swath. This bbox is then
         used with the stage_dem tool to obtain the appropriate DEM.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1493,9 +1523,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_s1_orbit_file(self):
-        """
-        Obtains the S3 location of the orbit file configured for use with a
+        """Obtains the S3 location of the orbit file configured for use with a
         CSLC-S1 or RTC-S1 job.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1540,13 +1571,14 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_s1_safe_file(self):
-        """
-        Obtains the input SAFE file for use with an CSLC-S1 or RTC-S1 job.
+        """Obtains the input SAFE file for use with an CSLC-S1 or RTC-S1 job.
         This local path is then configured as the value of safe_file_path within the
         interim RunConfig.
-
+        
         The SAFE file is manually localized here, so it will be available for
         use when obtaining the corresponding DEM.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1587,11 +1619,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_slc_s1_tec_file(self):
-        """
-        Stages an Ionosphere Correction (TEC) file for use with a CSLC-S1
+        """Stages an Ionosphere Correction (TEC) file for use with a CSLC-S1
         job. The name of the SLC archive to be processed is used to obtain
         the date of the corresponding TEC file to download. The stage_ionosphere_file.py
         script is then used to perform the download.
+
 
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
@@ -1648,9 +1680,7 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_static_ancillary_files(self):
-        """
-        Gets the S3 paths to the configured static ancillary input files.
-        """
+        """Gets the S3 paths to the configured static ancillary input files."""
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
@@ -1693,10 +1723,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def get_worldcover(self):
-        """
-        This function downloads a Worldcover map over the bbox provided in the
+        """This function downloads a Worldcover map over the bbox provided in the
         PGE yaml config, or derives the appropriate bbox based on the tile code
         of the product's metadata (if available).
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1781,11 +1812,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def instantiate_algorithm_parameters_template(self):
-        """
-        Downloads a template algorithm parameters yaml file from S3, then
+        """Downloads a template algorithm parameters yaml file from S3, then
         performs string replacement in memory to instantiate the template.
         String replacement is determined by a pattern mapping associated with
         the chimera configuration for this function.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
@@ -1834,9 +1866,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return rc_params
 
     def set_daac_product_type(self):
-        """
-        Sets the DAAC product type
+        """Sets the DAAC product type
         :return: a DAAC product type that will use to populate collection value in CNM-S msg
+
+
         """
         logger.info(
             "Calling function {} function".format(oc_const.SET_DAAC_PRODUCT_TYPE)
@@ -1857,6 +1890,7 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             )
 
     def set_extra_pge_output_metadata(self):
+        """ """
         logger.info(
             "Calling {} pre-condition function".format(
                 oc_const.SET_EXTRA_PGE_OUTPUT_METADATA
@@ -1875,11 +1909,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         return {oc_const.EXTRA_PGE_OUTPUT_METADATA: extra_met}
 
     def set_sample_product_metadata(self):
-        """
-        Overwrites the "product_metadata" field of the context dictionary with
+        """Overwrites the "product_metadata" field of the context dictionary with
         the contents of a JSON file read from S3. This function is only intended
         for use with testing of PGE SCIFLO workflows, and should not be included
         as a precondition function for any PGE's in production.
+
+
         """
         logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
