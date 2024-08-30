@@ -1,4 +1,5 @@
-{ "description": "This file specifies expected files to be downloaded in a DISP-S1 re-processing scenario",
+{
+  "description": "This file specifies expected files to be downloaded in a DISP-S1 re-processing scenario",
   "comment": "Reprocessing by date range and frame_id",
   "processing_mode": "reprocessing",
   "param_type": "date_range",
