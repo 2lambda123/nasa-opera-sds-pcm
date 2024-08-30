@@ -1,16 +1,13 @@
 import json
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pandas as pd
 import pytest
 import requests
-from opera_validator import generate_url_params
-from opera_validator import get_burst_id
-from opera_validator import get_burst_sensing_datetime
-from opera_validator import map_cslc_bursts_to_frames
-from opera_validator import validate_disp_s1
-from opera_validator import validate_dswx_s1
+from opera_validator import (generate_url_params, get_burst_id,
+                             get_burst_sensing_datetime,
+                             map_cslc_bursts_to_frames, validate_disp_s1,
+                             validate_dswx_s1)
 
 
 def test_get_burst_id():
