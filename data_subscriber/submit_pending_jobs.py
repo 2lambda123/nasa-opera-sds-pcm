@@ -51,13 +51,13 @@ def condition_satisfied(
 ):
     """
 
-    :param job_source: 
-    :param es: 
-    :param disp_burst_map: 
-    :param query_args: 
-    :param token: 
-    :param cmr: 
-    :param settings: 
+    :param job_source:
+    :param es:
+    :param disp_burst_map:
+    :param query_args:
+    :param token:
+    :param cmr:
+    :param settings:
 
     """
     k = job_source["k"]
@@ -116,7 +116,7 @@ def condition_satisfied(
 def run(argv: list[str]):
     """
 
-    :param argv: list[str]: 
+    :param argv: list[str]:
 
     """
     logger.info(f"{argv=}")

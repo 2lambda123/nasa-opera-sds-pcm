@@ -20,7 +20,7 @@ def main():
 def run(argv: list[str]):
     """
 
-    :param argv: list[str]: 
+    :param argv: list[str]:
 
     """
     es = es_conn_util.get_es_connection(logger)

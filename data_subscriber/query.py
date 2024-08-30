@@ -54,12 +54,12 @@ class CmrQuery:
     def run_query(self, args, token, es_conn: ProductCatalog, cmr, job_id, settings):
         """
 
-        :param args: 
-        :param token: 
-        :param es_conn: ProductCatalog: 
-        :param cmr: 
-        :param job_id: 
-        :param settings: 
+        :param args:
+        :param token:
+        :param es_conn: ProductCatalog:
+        :param cmr:
+        :param job_id:
+        :param settings:
 
         """
         query_dt = datetime.now()
@@ -162,12 +162,12 @@ class CmrQuery:
     def query_cmr(self, args, token, cmr, settings, timerange, now: datetime):
         """
 
-        :param args: 
-        :param token: 
-        :param cmr: 
-        :param settings: 
-        :param timerange: 
-        :param now: datetime: 
+        :param args:
+        :param token:
+        :param cmr:
+        :param settings:
+        :param timerange:
+        :param now: datetime:
 
         """
         granules = asyncio.run(
@@ -179,7 +179,7 @@ class CmrQuery:
         """If we have two granules with the same granule_id, we only keep the one
         with the latest revision_id. This should be very rare.
 
-        :param granules: 
+        :param granules:
 
         """
         granule_dict = {}
@@ -202,9 +202,9 @@ class CmrQuery:
     def prepare_additional_fields(self, granule, args, granule_id):
         """
 
-        :param granule: 
-        :param args: 
-        :param granule_id: 
+        :param granule:
+        :param args:
+        :param granule_id:
 
         """
         additional_fields = {
@@ -217,7 +217,7 @@ class CmrQuery:
     def extend_additional_records(self, granules):
         """
 
-        :param granules: 
+        :param granules:
 
         """
         pass
@@ -225,7 +225,7 @@ class CmrQuery:
     def determine_download_granules(self, granules):
         """
 
-        :param granules: 
+        :param granules:
 
         """
         return granules
@@ -233,8 +233,8 @@ class CmrQuery:
     def catalog_granules(self, granules, query_dt):
         """
 
-        :param granules: 
-        :param query_dt: 
+        :param granules:
+        :param query_dt:
 
         """
         for granule in granules:
@@ -262,7 +262,7 @@ class CmrQuery:
     def update_granule_index(self, granule):
         """
 
-        :param granule: 
+        :param granule:
 
         """
         pass
@@ -274,8 +274,8 @@ class CmrQuery:
     def download_job_submission_handler(self, granules, query_timerange):
         """
 
-        :param granules: 
-        :param query_timerange: 
+        :param granules:
+        :param query_timerange:
 
         """
         batch_id_to_urls_map = defaultdict(set)
@@ -326,7 +326,7 @@ class CmrQuery:
     def get_download_chunks(self, batch_id_to_urls_map):
         """
 
-        :param batch_id_to_urls_map: 
+        :param batch_id_to_urls_map:
 
         """
         return chunked(batch_id_to_urls_map.items(), n=self.args.chunk_size)
@@ -336,8 +336,8 @@ class CmrQuery:
     ):
         """
 
-        :param batch_id_to_urls_map: 
-        :param query_timerange: 
+        :param batch_id_to_urls_map:
+        :param query_timerange:
 
         """
         job_submission_tasks = []
@@ -469,8 +469,8 @@ class CmrQuery:
     def create_download_job_params(self, query_timerange, chunk_batch_ids):
         """
 
-        :param query_timerange: 
-        :param chunk_batch_ids: 
+        :param query_timerange:
+        :param chunk_batch_ids:
 
         """
         args = self.args
@@ -545,12 +545,12 @@ def submit_download_job(
 ) -> str:
     """
 
-    :param *: 
+    :param *:
     :param release_version:  (Default value = None)
-    :param product_type: str: 
-    :param params: list[dict[str: 
-    :param str]]: 
-    :param job_queue: str: 
+    :param product_type: str:
+    :param params: list[dict[str:
+    :param str]]:
+    :param job_queue: str:
     :param job_name:  (Default value = None)
     :param payload_hash:  (Default value = None)
 
@@ -580,10 +580,10 @@ def _submit_mozart_job_minimal(
 ) -> str:
     """
 
-    :param *: 
-    :param hysdsio: dict: 
-    :param job_queue: str: 
-    :param provider_str: str: 
+    :param *:
+    :param hysdsio: dict:
+    :param job_queue: str:
+    :param provider_str: str:
     :param job_name:  (Default value = None)
     :param payload_hash:  (Default value = None)
 
@@ -625,15 +625,15 @@ def update_url_index(
 ):
     """
 
-    :param es_conn: 
-    :param urls: list[str]: 
-    :param granule: dict: 
-    :param job_id: str: 
-    :param query_dt: datetime: 
-    :param temporal_extent_beginning_dt: datetime: 
-    :param revision_date_dt: datetime: 
-    :param *args: 
-    :param **kwargs: 
+    :param es_conn:
+    :param urls: list[str]:
+    :param granule: dict:
+    :param job_id: str:
+    :param query_dt: datetime:
+    :param temporal_extent_beginning_dt: datetime:
+    :param revision_date_dt: datetime:
+    :param *args:
+    :param **kwargs:
 
     """
     # group pairs of URLs (http and s3) by filename
@@ -658,8 +658,8 @@ def update_url_index(
 def get_query_timerange(args, now: datetime, silent=False):
     """
 
-    :param args: 
-    :param now: datetime: 
+    :param args:
+    :param now: datetime:
     :param silent:  (Default value = False)
 
     """
