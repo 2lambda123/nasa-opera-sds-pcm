@@ -35,7 +35,7 @@ class MockGdal:
     def UseExceptions(*args):
         """
 
-        :param *args: 
+        :param *args:
 
         """
         pass
@@ -44,9 +44,9 @@ class MockGdal:
     def Translate(destName, srcDS, **kwargs):
         """
 
-        :param destName: 
-        :param srcDS: 
-        :param **kwargs: 
+        :param destName:
+        :param srcDS:
+        :param **kwargs:
 
         """
         with open(destName, "w") as outfile:
@@ -56,9 +56,9 @@ class MockGdal:
     def BuildVRT(destName, srcDSOrSrcDSTab, **kwargs):
         """
 
-        :param destName: 
-        :param srcDSOrSrcDSTab: 
-        :param **kwargs: 
+        :param destName:
+        :param srcDSOrSrcDSTab:
+        :param **kwargs:
 
         """
         with open(destName, "w") as outfile:
@@ -75,7 +75,7 @@ class MockGdal:
         def GetRasterBand(self, index):
             """
 
-            :param index: 
+            :param index:
 
             """
             class MockRasterBand:
@@ -90,7 +90,7 @@ class MockGdal:
     def Open(filename, filemode=None):
         """Mock implementation for gdal.Open. Returns an instance of the mock Dataset.
 
-        :param filename: 
+        :param filename:
         :param filemode:  (Default value = None)
 
         """
@@ -101,8 +101,8 @@ def _check_aws_connection_patch(bucket, key):
     """No-op patch function for use with testing precondition functions that attempt
     AWS access
 
-    :param bucket: 
-    :param key: 
+    :param bucket:
+    :param key:
 
     """
     pass
@@ -113,7 +113,7 @@ def _object_download_file_patch(
 ):
     """Patch for the boto3.s3.inject.object_download_file function
 
-    :param Filename: 
+    :param Filename:
     :param ExtraArgs:  (Default value = None)
     :param Callback:  (Default value = None)
     :param Config:  (Default value = None)
@@ -142,7 +142,7 @@ class MockCollectionManager:
     def filter(self, **kwargs):
         """
 
-        :param **kwargs: 
+        :param **kwargs:
 
         """
         self.s3_object.key = "fake/key/to/S1A_OPER_AUX_RESORB_OPOD.EOF"
@@ -295,10 +295,10 @@ class TestOperaPreConditionFunctions(unittest.TestCase):
         # Create a dummy SAFE zip archive containing a stub version of
         # manifest.safe with the portion of XML we'll be looking for
         manifest_safe_text = """<?xml version="1.0" encoding="UTF-8"?>
-        <xfdu:XFDU xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                   xmlns:gml="http://www.opengis.net/gml" 
-                   xmlns:xfdu="urn:ccsds:schema:xfdu:1" 
-                   xmlns:safe="http://www.esa.int/safe/sentinel-1.0" 
+        <xfdu:XFDU xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:gml="http://www.opengis.net/gml"
+                   xmlns:xfdu="urn:ccsds:schema:xfdu:1"
+                   xmlns:safe="http://www.esa.int/safe/sentinel-1.0"
                    version="esa/safe/sentinel-1.0/sentinel-1/sar/level-1/slc/standard/iwdp">
             <metadataSection>
                 <metadataObject ID="measurementFrameSet" classification="DESCRIPTION" category="DMD">

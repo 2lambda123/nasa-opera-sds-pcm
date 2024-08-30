@@ -15,7 +15,7 @@ from util.ecmwf_util import find_ecmwf_for_datetime
 def test_check_s3_for_ecmwf(caplog):
     """
 
-    :param caplog: 
+    :param caplog:
 
     """
     # Test with valid result from s3_client.head_object()

@@ -22,10 +22,10 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
 
     :param ecmwf_s3_uri: S3 URI to ECMWF file to locate. Should begin with s3://
     :type ecmwf_s3_uri: str
-    :param ecmwf_s3_uri: str: 
+    :param ecmwf_s3_uri: str:
     :rtype: True if the file exists in S3, False otherwise
 
-    
+
     """
     try:
         parsed_uri = urlparse(ecmwf_s3_uri)
@@ -64,9 +64,9 @@ def ecmwf_key_for_datetime(dt: datetime):
 
     :param dt: The datetime object to derive the ECMWF key path for.
     :type dt: datetime
-    :param dt: datetime: 
+    :param dt: datetime:
 
-    
+
     """
     # Derive the YYYYMMDD key prefix
     prefix = dt.strftime("%Y%m%d")
@@ -97,10 +97,10 @@ def find_ecmwf_for_datetime(dt: datetime, s3_prefix="s3://opera-ancillaries/ecmw
     :param s3_prefix: Prefix to be appended to the datetime-specific portion of the S3 URI.
         Should always start with "s3://". Defaults to s3://opera-ancillaries/ecmwf.
     :type s3_prefix: str, optional
-    :param dt: datetime: 
+    :param dt: datetime:
     :rtype: S3 URI for the location of the desired ECMWF file, if it exists. None otherwise.
 
-    
+
     """
     if not s3_prefix.startswith("s3://"):
         raise ValueError(
