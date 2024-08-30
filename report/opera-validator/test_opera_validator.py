@@ -90,7 +90,7 @@ def test_generate_url_params():
 def test_map_cslc_bursts_to_frames(mocker):
     """
 
-    :param mocker:
+    :param mocker: 
 
     """
     # Mock data for bursts to frames JSON

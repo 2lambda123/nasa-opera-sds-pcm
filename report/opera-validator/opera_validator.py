@@ -33,12 +33,12 @@ logging.basicConfig(
 
 def get_custom(url, params):
     """Get results for a specific page with a defined page size.
-
+    
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
-    :param url:
-    :param params:
+    :param url: param params:
+    :param params: 
     :returns: Query results as a dict (json) object
 
     """
@@ -63,12 +63,12 @@ def get_custom(url, params):
 
 def fetch_with_backoff(url, params):
     """Fetch a batch of granules with exponential backoff and jitter.
-
+    
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
-    :param url:
-    :param params:
+    :param url: param params:
+    :param params: 
     :returns: Batch of granules (json/dict objects)
 
     """
@@ -95,7 +95,7 @@ def fetch_with_backoff(url, params):
 
 def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
     """Fetches granules in parallel using the provided API.
-
+    
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
@@ -103,11 +103,11 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
     :page_size (int): The number of granules to fetch per page.
     :downloaded_batches (multiprocessing.Value): A shared integer value representing
         the number of batches that have been successfully downloaded.
-    :param url:
-    :param params:
-    :param page_num:
-    :param page_size:
-    :param downloaded_batches:
+    :param url: param params:
+    :param page_num: param page_size:
+    :param downloaded_batches: returns: list): A list of batch granules fetched from the API.
+    :param params: 
+    :param page_size: 
     :returns: list): A list of batch granules fetched from the API.
 
     """
@@ -132,10 +132,10 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
 
 def get_burst_id(granule_id):
     """Extracts the burst ID from a given granule ID string.
-
+    
     :granule_id (str): The granule ID from which to extract the burst ID.
 
-    :param granule_id:
+    :param granule_id: returns: str): The extracted burst ID, or an empty string if not found.
     :returns: str): The extracted burst ID, or an empty string if not found.
 
     """
@@ -153,10 +153,10 @@ def get_burst_id(granule_id):
 
 def get_burst_sensing_datetime(granule_id):
     """Extracts the burst sensing date-time from a given granule ID string.
-
+    
     :granule_id (str): The granule ID from which to extract the burst ID.
 
-    :param granule_id:
+    :param granule_id: returns: str): The extracted burst sensing date-time, or an empty string if not found.
     :returns: str): The extracted burst sensing date-time, or an empty string if not found.
 
     """
@@ -171,16 +171,16 @@ def get_burst_sensing_datetime(granule_id):
 
 def get_total_granules(url, params, retries=5, backoff_factor=1):
     """Attempts to get the total number of granules with retry and exponential backoff.
-
+    
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
     :retries: Number of retry attempts.
     :backoff_factor: Factor to determine the next sleep time.
-    :param url:
-    :param params:
-    :param retries:  (Default value = 5)
-    :param backoff_factor:  (Default value = 1)
+    :param url: param params:
+    :param retries: Default value = 5)
+    :param backoff_factor: Default value = 1)
+    :param params: 
     :returns: Total number of granules.
 
     """
@@ -202,7 +202,7 @@ def get_total_granules(url, params, retries=5, backoff_factor=1):
 
 def get_burst_ids_from_file(filename):
     """Reads a file containing granule IDs and extracts both burst IDs and sensing date-times from them.
-
+    
     This function opens a specified file and reads through each line, treating each line as a granule ID.
     For each granule ID, it attempts to extract a burst ID and the corresponding burst sensing datetime.
     If successful, these are stored in dictionaries mapping burst IDs to granule IDs and burst dates respectively.
@@ -243,7 +243,7 @@ def generate_url_params(
     timestamp_type="temporal",
 ):
     """Generates URL parameters for querying granules from CMR (Common Metadata Repository) based on provided criteria.
-
+    
     This function constructs the base URL and parameters necessary for making granule search requests to the CMR API.
     It configures search parameters including the provider, the product short name, and a temporal filter that limits
     searches to a specific time range around the provided start and end dates. The temporal filter can be adjusted based
@@ -295,21 +295,21 @@ def get_granules_from_query(
     start, end, timestamp, endpoint, provider="ASF", shortname="OPERA_L2_RTC-S1_V1"
 ):
     """Fetches granule metadata from the CMR API within a specified temporal range using parallel requests.
-
+    
     :start: Start time in ISO 8601 format.
     :end: End time in ISO 8601 format.
     :timestamp: Type of timestamp to filter granules (e.g., 'TEMPORAL', 'PRODUCTION').
     :endpoint: CMR API endpoint ('OPS' or 'UAT').
     :provider: Data provider ID (default 'ASF').
     :shortname: Short name of the product (default 'OPERA_L2_RTC-S1_V1').
-    :return: List of granule metadata.
 
-    :param start:
-    :param end:
-    :param timestamp:
-    :param endpoint:
-    :param provider:  (Default value = "ASF")
-    :param shortname:  (Default value = "OPERA_L2_RTC-S1_V1")
+    :param start: param end:
+    :param timestamp: param endpoint:
+    :param provider: Default value = "ASF")
+    :param shortname: Default value = "OPERA_L2_RTC-S1_V1")
+    :param end: 
+    :param endpoint: 
+    :returns: List of granule metadata.
 
     """
 
@@ -391,11 +391,11 @@ def get_granules_from_query(
 
 def get_granule_ids_from_granules(granules):
     """Extracts granule IDs from a list of granule metadata.
-
+    
     :granules: List of granule metadata dictionaries.
-    :return: List of granule IDs.
 
-    :param granules:
+    :param granules: 
+    :returns: List of granule IDs.
 
     """
 
@@ -412,21 +412,21 @@ def get_burst_ids_and_sensing_times_from_query(
     start, end, timestamp, endpoint, provider="ASF", shortname="OPERA_L2_RTC-S1_V1"
 ):
     """Fetches burst IDs and their sensing times from the CMR API within a specified temporal range.
-
+    
     :start: Start time in ISO 8601 format.
     :end: End time in ISO 8601 format.
     :timestamp: Type of timestamp for filtering (e.g., 'TEMPORAL', 'PRODUCTION').
     :endpoint: CMR API endpoint ('OPS' or 'UAT').
     :provider: Data provider ID (default 'ASF').
     :shortname: Product short name (default 'OPERA_L2_RTC-S1_V1').
-    :return: Two dictionaries - one mapping burst IDs to granule IDs, and another mapping burst IDs to sensing times.
 
-    :param start:
-    :param end:
-    :param timestamp:
-    :param endpoint:
-    :param provider:  (Default value = "ASF")
-    :param shortname:  (Default value = "OPERA_L2_RTC-S1_V1")
+    :param start: param end:
+    :param timestamp: param endpoint:
+    :param provider: Default value = "ASF")
+    :param shortname: Default value = "OPERA_L2_RTC-S1_V1")
+    :param end: 
+    :param endpoint: 
+    :returns: Two dictionaries - one mapping burst IDs to granule IDs, and another mapping burst IDs to sensing times.
 
     """
 
@@ -483,7 +483,7 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
     :returns: pandas.DataFrame or bool
         A modified DataFrame with additional columns 'Unprocessed RTC Native IDs' and 'Unprocessed RTC Native IDs Count' showing
         granules not found in the CMR results and their count respectively. Returns False if the CMR query fails.
-
+    
     Raises:
         requests.exceptions.RequestException if the CMR query fails, which is logged as an error.
 
@@ -566,7 +566,7 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
         def filter_and_find_missing(row):
             """
 
-            :param row:
+            :param row: 
 
             """
             rtc_bursts_in_df_row = set(row["Covered RTC Native IDs"].split(", "))
@@ -588,7 +588,7 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
         def count_missing(row):
             """
 
-            :param row:
+            :param row: 
 
             """
             count = len(row["Unprocessed RTC Native IDs"].split(", "))
@@ -630,7 +630,7 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
     :returns: pandas.DataFrame or bool
         A modified DataFrame with additional columns 'Unprocessed RTC Native IDs' and 'Unprocessed RTC Native IDs Count' showing
         granules not found in the CMR results and their count respectively. Returns False if the CMR query fails.
-
+    
     Raises:
         requests.exceptions.RequestException if the CMR query fails, which is logged as an error.
 
@@ -695,7 +695,7 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
         def filter_and_find_missing(row):
             """
 
-            :param row:
+            :param row: 
 
             """
             cslc_bursts_in_df_row = set(row["Covered CSLC Native IDs"].split(", "))
@@ -709,7 +709,7 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
         def count_missing(row):
             """
 
-            :param row:
+            :param row: 
 
             """
             count = len(row["Unprocessed CSLC Native IDs"].split(", "))
@@ -737,15 +737,15 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts
     2. Take frame IDs from (1) and find all possible burst IDs associated with those frame IDs
     3. Take burst IDs from (2) and mark the ones available from burst IDs from (1)
     4. Return a dataframe that lists all frame IDs, all possible burst IDs from (2), and matched burst IDs from (1)
-
+    
     :burst_ids: List of burst IDs to map.
     :bursts_to_frames_file: Path to the JSON file that maps bursts to frames.
     :frames_to_bursts_file: Path to the JSON file that maps frames to bursts.
-    :return: A DataFrame with columns for frame IDs, all possible bursts, their counts, matching bursts, and their counts.
 
-    :param burst_ids:
-    :param bursts_to_frames_file:
-    :param frames_to_bursts_file:
+    :param burst_ids: param bursts_to_frames_file:
+    :param frames_to_bursts_file: 
+    :param bursts_to_frames_file: 
+    :returns: A DataFrame with columns for frame IDs, all possible bursts, their counts, matching bursts, and their counts.
 
     """
 
