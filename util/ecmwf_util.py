@@ -19,7 +19,6 @@ import boto3
 s3_client = boto3.client("s3")
 
 
-
 def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     """
     Checks for the existence of an ECMWF (troposphere) file in S3.
@@ -42,7 +41,8 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     try:
         parsed_uri = urlparse(ecmwf_s3_uri)
     except ValueError as err:
-        logger.error("Failed to parse ECMWF S3 URI %s, reason: %s", ecmwf_s3_uri, str(err))
+        logger.error("Failed to parse ECMWF S3 URI %s, reason: %s",
+                     ecmwf_s3_uri, str(err))
         raise
 
     bucket = parsed_uri.netloc
@@ -57,7 +57,8 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     except botocore.exceptions.ClientError as e:
         if e.response["Error"]["Code"] == "404":
             # File does not exist
-            logger.warning("ECMWF file %s does not exist in bucket %s", key, bucket)
+            logger.warning(
+                "ECMWF file %s does not exist in bucket %s", key, bucket)
             return False
         else:
             # Some kind of unexpected error
@@ -66,7 +67,8 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     # If here, the file exists in S3
     return True
 
-def ecmwf_key_for_datetime(dt : datetime):
+
+def ecmwf_key_for_datetime(dt: datetime):
     """
     Derives the expected S3 key of an ECMWF file corresponding to the provided
     datetime. This does not include a bucket name, or any key portions that
@@ -104,7 +106,7 @@ def ecmwf_key_for_datetime(dt : datetime):
     )
 
 
-def find_ecmwf_for_datetime(dt : datetime, s3_prefix="s3://opera-ancillaries/ecmwf"):
+def find_ecmwf_for_datetime(dt: datetime, s3_prefix="s3://opera-ancillaries/ecmwf"):
     """
     Returns the S3 path to an ECMWF file corresponding to the provided datetime,
     if it exists.
@@ -128,7 +130,8 @@ def find_ecmwf_for_datetime(dt : datetime, s3_prefix="s3://opera-ancillaries/ecm
 
     """
     if not s3_prefix.startswith("s3://"):
-        raise ValueError(f"Invalid S3 prefix ({s3_prefix}) provided. Must begin with \"s3://\"")
+        raise ValueError(
+            f"Invalid S3 prefix ({s3_prefix}) provided. Must begin with \"s3://\"")
 
     ecmwf_key = ecmwf_key_for_datetime(dt)
 

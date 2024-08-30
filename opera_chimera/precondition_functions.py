@@ -64,9 +64,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
     def get_ancillary_inputs_coverage_flag(self):
         """Gets the setting for the check_ancillary_inputs_coverage flag from settings.yaml"""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        check_ancillary_inputs_coverage = self._settings.get("DSWX_HLS").get("CHECK_ANCILLARY_INPUTS_COVERAGE")
+        check_ancillary_inputs_coverage = self._settings.get(
+            "DSWX_HLS").get("CHECK_ANCILLARY_INPUTS_COVERAGE")
 
         rc_params = {
             "check_ancillary_inputs_coverage": check_ancillary_inputs_coverage
@@ -78,9 +80,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
     def get_apply_ocean_masking_flag(self):
         """Gets the setting for the apply_ocean_masking flag from settings.yaml"""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        apply_ocean_masking = self._settings.get("DSWX_HLS").get("APPLY_OCEAN_MASKING")
+        apply_ocean_masking = self._settings.get(
+            "DSWX_HLS").get("APPLY_OCEAN_MASKING")
 
         rc_params = {
             "apply_ocean_masking": apply_ocean_masking
@@ -103,11 +107,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         on the workflow (baseline vs. static layer).
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         pge_shortname = oc_const.L2_CSLC_S1[3:].upper()
 
-        product_spec_version = self._settings.get(pge_shortname).get(oc_const.PRODUCT_SPEC_VER)
+        product_spec_version = self._settings.get(
+            pge_shortname).get(oc_const.PRODUCT_SPEC_VER)
 
         rc_params = {
             "product_specification_version": product_spec_version
@@ -119,14 +125,17 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
     def get_data_validity_start_date(self):
         """Gets the setting for the data_validity_start_date flag from settings.yaml"""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         pge_name = self._pge_config.get('pge_name')
         pge_shortname = pge_name[3:].upper()
 
-        logger.info(f'Getting DATA_VALIDITY_START_DATE setting for PGE {pge_shortname}')
+        logger.info(
+            f'Getting DATA_VALIDITY_START_DATE setting for PGE {pge_shortname}')
 
-        data_validity_start_time = self._settings.get(pge_shortname).get("DATA_VALIDITY_START_DATE")
+        data_validity_start_time = self._settings.get(
+            pge_shortname).get("DATA_VALIDITY_START_DATE")
 
         rc_params = {
             "data_validity_start_date": data_validity_start_time
@@ -142,7 +151,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         with a DISP-S1 job. Takes processing mode into account (forward vs historical)
         to determine the correct parameters to load.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -153,8 +163,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         if processing_mode == oc_const.PROCESSING_MODE_REPROCESSING:
             processing_mode = oc_const.PROCESSING_MODE_FORWARD
 
-        s3_bucket = self._pge_config.get(oc_const.GET_DISP_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DISP_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DISP_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DISP_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_KEY)
 
         # Fill in the processing mode
         s3_key = s3_key.format(processing_mode=processing_mode)
@@ -180,7 +192,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         TODO: currently a stub, implement once source of dispersion files is determined
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {
             oc_const.AMPLITUDE_DISPERSION_FILES: list()
@@ -197,7 +210,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         TODO: currently a stub, implement once source of mean files is determined
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {
             oc_const.AMPLITUDE_MEAN_FILES: list()
@@ -212,11 +226,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Derives the list of S3 paths to the ionosphere files to be used with a
         DISP-S1 job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         metadata = self._context["product_metadata"]["metadata"]
 
-        c_cslc_paths = metadata["product_paths"].get(oc_const.L2_CSLC_S1_COMPRESSED, [])
+        c_cslc_paths = metadata["product_paths"].get(
+            oc_const.L2_CSLC_S1_COMPRESSED, [])
 
         rc_params = {
             oc_const.COMPRESSED_CSLC_PATHS: c_cslc_paths
@@ -231,7 +247,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         This function downloads a DEM sub-region over the bounding box provided
         in the input product metadata for a DISP-S1 processing job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -239,13 +256,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         logger.info("working_dir : {}".format(working_dir))
 
         # Get the bounding box for the sub-region to select
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         bbox = metadata.get('bounding_box')
 
         # Get the s3 location parameters
-        s3_bucket = self._pge_config.get(oc_const.GET_DISP_S1_DEM, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DISP_S1_DEM, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DISP_S1_DEM, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DISP_S1_DEM, {}).get(oc_const.S3_KEY)
 
         output_filepath = os.path.join(working_dir, 'dem.vrt')
 
@@ -259,7 +279,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         args.filepath = None
         args.bbox = bbox
         args.tile_code = None
-        args.margin = int(self._settings.get("DISP_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
+        args.margin = int(self._settings.get(
+            "DISP_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
         args.log_level = LogLevels.INFO.value
 
         logger.info(f'Using margin value of {args.margin} with staged DEM')
@@ -269,7 +290,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                                                staging_func=stage_dem,
                                                staging_func_args=args)
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.DEM_FILE: output_filepath
@@ -283,9 +305,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         """
         Assigns the frame ID to the RunConfig for DISP-S1 PGE jobs.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
         frame_id = metadata['frame_id']
 
         rc_params = {
@@ -301,7 +325,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Derives the list of S3 paths to the ionosphere files to be used with a
         DISP-S1 job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         metadata = self._context["product_metadata"]["metadata"]
 
@@ -320,7 +345,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         This function downloads a sub-region of the water mask used with DISP-S1
         processing over the bounding box provided in the input product metadata.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
@@ -329,12 +355,15 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         logger.info("working_dir : {}".format(working_dir))
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         bbox = metadata.get('bounding_box')
 
-        s3_bucket = self._pge_config.get(oc_const.GET_DISP_S1_MASK_FILE, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DISP_S1_MASK_FILE, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DISP_S1_MASK_FILE, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DISP_S1_MASK_FILE, {}).get(oc_const.S3_KEY)
 
         ancillary_type = "Water mask"
         output_filepath = os.path.join(working_dir, 'water_mask.vrt')
@@ -347,10 +376,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         args.s3_bucket = s3_bucket
         args.s3_key = s3_key
         args.bbox = bbox
-        args.margin = int(self._settings.get("DISP_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
+        args.margin = int(self._settings.get(
+            "DISP_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
         args.log_level = LogLevels.INFO.value
 
-        logger.info(f'Using margin value of {args.margin} with staged {ancillary_type}')
+        logger.info(
+            f'Using margin value of {args.margin} with staged {ancillary_type}')
 
         pge_metrics = self.get_opera_ancillary(
             ancillary_type=ancillary_type,
@@ -359,7 +390,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             staging_func_args=args
         )
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params[oc_const.MASK_FILE] = output_filepath
 
@@ -373,19 +405,22 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         fraction of the total available.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         available_cores = os.cpu_count()
 
         # Use all available cores for threads_per_worker
         threads_per_worker = available_cores
 
-        logger.info(f"Allocating {threads_per_worker=} out of {available_cores} available")
+        logger.info(
+            f"Allocating {threads_per_worker=} out of {available_cores} available")
 
         # Use (1/2 + 1) of the available cores for parallel burst processing
         n_parallel_bursts = max(int(round(available_cores / 2)) + 1, 1)
 
-        logger.info(f"Allocating {n_parallel_bursts=} out of {available_cores} available")
+        logger.info(
+            f"Allocating {n_parallel_bursts=} out of {available_cores} available")
 
         rc_params = {
             "threads_per_worker": str(threads_per_worker),
@@ -401,11 +436,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Determines the polarization value of the CSLC-S1 products used with a
         DISP-S1 job
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         dataset_type = self._context["dataset_type"]
 
@@ -423,7 +460,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # Reduce each product filename to just the polarization field value
         available_polarizations = map(
-            lambda path: pattern.match(os.path.basename(path)).groupdict()['pol'],
+            lambda path: pattern.match(
+                os.path.basename(path)).groupdict()['pol'],
             list(polarization_layers)
         )
 
@@ -432,7 +470,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # Make sure we are left with only a single polarization value
         if len(unique_polarizations) == 0:
-            raise ValueError('No polarization fields parsed from input CSLC product set')
+            raise ValueError(
+                'No polarization fields parsed from input CSLC product set')
 
         if len(unique_polarizations) > 1:
             raise ValueError(f'More than one ({len(unique_polarizations)}) polarization values '
@@ -449,7 +488,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Assigns the product type (forward/historical) to the RunConfig for
         DISP-S1 PGE jobs.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         processing_mode = self._context["processing_mode"]
 
@@ -468,9 +508,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Assigns the save_compressed_slc flag based on the value passed to the
         job from the CSLC download job
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         save_compressed_cslc = metadata["save_compressed_cslc"]
 
@@ -488,11 +530,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         DISP-S1 job.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         metadata = self._context["product_metadata"]["metadata"]
 
-        static_layers_paths = metadata["product_paths"].get("L2_CSLC_S1_STATIC", [])
+        static_layers_paths = metadata["product_paths"].get(
+            "L2_CSLC_S1_STATIC", [])
 
         rc_params = {
             oc_const.STATIC_LAYERS_FILES: static_layers_paths
@@ -508,19 +552,24 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         DISP-S1 job.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         pge_shortname = oc_const.L3_DISP_S1[3:].upper()
 
-        strict_mode = self._settings.get(pge_shortname).get("STRICT_ANCILLARY_USAGE")
+        strict_mode = self._settings.get(
+            pge_shortname).get("STRICT_ANCILLARY_USAGE")
 
         metadata = self._context["product_metadata"]["metadata"]
 
         cslc_paths = metadata["product_paths"].get(oc_const.L2_CSLC_S1, [])
-        compressed_cslc_paths = metadata["product_paths"].get(oc_const.L2_CSLC_S1_COMPRESSED, [])
+        compressed_cslc_paths = metadata["product_paths"].get(
+            oc_const.L2_CSLC_S1_COMPRESSED, [])
 
-        s3_bucket = self._pge_config.get(oc_const.GET_DISP_S1_TROPOSPHERE_FILES, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DISP_S1_TROPOSPHERE_FILES, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DISP_S1_TROPOSPHERE_FILES, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DISP_S1_TROPOSPHERE_FILES, {}).get(oc_const.S3_KEY)
 
         acquisition_datetimes = set()
 
@@ -528,10 +577,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             cslc_native_id = os.path.splitext(os.path.basename(cslc_path))[0]
 
             if "compressed" in cslc_path.lower():
-                _, acquisition_date_str = parse_compressed_cslc_file_name(cslc_native_id)
+                _, acquisition_date_str = parse_compressed_cslc_file_name(
+                    cslc_native_id)
                 acquisition_datetime_str = acquisition_date_str + "T000000Z"
             else:
-                _, acquisition_datetime_str = parse_cslc_file_name(cslc_native_id)
+                _, acquisition_datetime_str = parse_cslc_file_name(
+                    cslc_native_id)
 
             acquisition_datetime = datetime.strptime(
                 acquisition_datetime_str, "%Y%m%dT%H%M%SZ"
@@ -542,16 +593,20 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         troposphere_s3_paths = [f"s3://{s3_bucket}/{s3_key}/{ecmwf_key_for_datetime(acquisition_datetime)}"
                                 for acquisition_datetime in acquisition_datetimes]
 
-        troposphere_s3_paths = list(set(troposphere_s3_paths))  # Remove any potential duplicates
+        # Remove any potential duplicates
+        troposphere_s3_paths = list(set(troposphere_s3_paths))
 
         if not all(
             check_s3_for_ecmwf(troposphere_s3_path) for troposphere_s3_path in troposphere_s3_paths
         ):
             if strict_mode:
-                raise RuntimeError(f"One or more expected ECMWF files is missing from {s3_bucket}/{s3_key}")
+                raise RuntimeError(
+                    f"One or more expected ECMWF files is missing from {s3_bucket}/{s3_key}")
             else:
-                logger.warning("One or more expected ECMWF files is missing from %s/%s", s3_bucket, s3_key)
-                logger.warning("No Tropospheres files will be included for this DISP-S1 job")
+                logger.warning(
+                    "One or more expected ECMWF files is missing from %s/%s", s3_bucket, s3_key)
+                logger.warning(
+                    "No Tropospheres files will be included for this DISP-S1 job")
 
                 troposphere_s3_paths = list()
 
@@ -569,7 +624,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         or derives the appropriate bbox based on the tile code of the product's
         metadata (if available).
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -579,10 +635,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         output_filepath = os.path.join(working_dir, 'dem.vrt')
 
         # get s3_bucket param
-        s3_bucket = self._pge_config.get(oc_const.GET_DSWX_HLS_DEM, {}).get(oc_const.S3_BUCKET)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DSWX_HLS_DEM, {}).get(oc_const.S3_BUCKET)
 
         # get bbox param
-        bbox = self._pge_config.get(oc_const.GET_DSWX_HLS_DEM, {}).get(oc_const.BBOX)
+        bbox = self._pge_config.get(
+            oc_const.GET_DSWX_HLS_DEM, {}).get(oc_const.BBOX)
 
         if bbox:
             # Convert to list if we were given a space-delimited string
@@ -595,9 +653,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         tile_code = get_input_hls_dataset_tile_code(self._context)
 
         if tile_code:
-            logger.info(f'Derived MGRS tile code {tile_code} from product metadata')
+            logger.info(
+                f'Derived MGRS tile code {tile_code} from product metadata')
         else:
-            logger.warning('Could not determine a tile code from product metadata')
+            logger.warning(
+                'Could not determine a tile code from product metadata')
 
         # do checks
         if bbox is None and tile_code is None:
@@ -616,7 +676,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         args.s3_key = ""
         args.outfile = output_filepath
         args.filepath = None
-        args.margin = int(self._settings.get("DSWX_HLS", {}).get("ANCILLARY_MARGIN", 50))  # KM
+        args.margin = int(self._settings.get(
+            "DSWX_HLS", {}).get("ANCILLARY_MARGIN", 50))  # KM
         args.log_level = LogLevels.INFO.value
 
         logger.info(f'Using margin value of {args.margin} with staged DEM')
@@ -631,7 +692,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                                                staging_func=stage_dem,
                                                staging_func_args=args)
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.DEM_FILE: output_filepath
@@ -643,7 +705,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
     def get_dswx_hls_input_filepaths(self) -> Dict:
         """Returns a partial RunConfig containing the s3 paths of the published L2_HLS products."""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         work_dir = get_working_dir()
         with open(PurePath(work_dir) / "datasets.json") as fp:
@@ -652,7 +715,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             job_json_dict = json.load(fp)
             dataset_type = job_json_dict["params"]["dataset_type"]
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
         product_paths: List[str] = []
         for file in metadata["Files"]:
             # Example publish location: "s3://{{ DATASET_S3_ENDPOINT }}:80/{{ DATASET_BUCKET }}/products/{id}"
@@ -673,7 +737,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
               acquire the appropriate input files are implemented with future
               releases
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -690,16 +755,21 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         import zipfile
         with zipfile.ZipFile(output_filepath) as myzip:
             zip_contents = myzip.namelist()
-            zip_contents = list(filter(lambda x: not x.startswith('__'), zip_contents))
-            zip_contents = list(filter(lambda x: not x.endswith('.DS_Store'), zip_contents))
+            zip_contents = list(
+                filter(lambda x: not x.startswith('__'), zip_contents))
+            zip_contents = list(
+                filter(lambda x: not x.endswith('.DS_Store'), zip_contents))
             myzip.extractall(path=working_dir, members=zip_contents)
 
-        rtc_data_dir = os.path.join(working_dir, 'dswx_ni_interface_0.1_expected_input', 'input_dir', 'RTC')
-        ancillary_data_dir = os.path.join(working_dir, 'dswx_ni_interface_0.1_expected_input', 'input_dir', 'ancillary_data')
+        rtc_data_dir = os.path.join(
+            working_dir, 'dswx_ni_interface_0.1_expected_input', 'input_dir', 'RTC')
+        ancillary_data_dir = os.path.join(
+            working_dir, 'dswx_ni_interface_0.1_expected_input', 'input_dir', 'ancillary_data')
 
         rtc_files = os.listdir(rtc_data_dir)
 
-        rtc_file_list = [os.path.join(rtc_data_dir, rtc_file) for rtc_file in rtc_files]
+        rtc_file_list = [os.path.join(rtc_data_dir, rtc_file)
+                         for rtc_file in rtc_files]
 
         rc_params = {
             'input_file_paths': rtc_file_list,
@@ -722,13 +792,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Downloads the designated algorithm parameters runconfig from S3 for use
         with a DSWx-S1 job
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
 
-        s3_bucket = self._pge_config.get(oc_const.GET_DSWX_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DSWX_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DSWX_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DSWX_S1_ALGORITHM_PARAMETERS, {}).get(oc_const.S3_KEY)
 
         output_filepath = os.path.join(working_dir, os.path.basename(s3_key))
 
@@ -749,7 +822,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         This function downloads a DEM sub-region over the bounding box provided
         in the input product metadata for a DSWx-S1 processing job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -757,13 +831,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         logger.info("working_dir : {}".format(working_dir))
 
         # Get the bounding box for the sub-region to select
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         bbox = metadata.get('bounding_box')
 
         # Get the s3 location parameters
-        s3_bucket = self._pge_config.get(oc_const.GET_DSWX_S1_DEM, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_DSWX_S1_DEM, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_DSWX_S1_DEM, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_DSWX_S1_DEM, {}).get(oc_const.S3_KEY)
 
         output_filepath = os.path.join(working_dir, 'dem.vrt')
 
@@ -777,7 +854,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         args.filepath = None
         args.bbox = bbox
         args.tile_code = None
-        args.margin = int(self._settings.get("DSWX_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
+        args.margin = int(self._settings.get(
+            "DSWX_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
         args.log_level = LogLevels.INFO.value
 
         logger.info(f'Using margin value of {args.margin} with staged DEM')
@@ -787,7 +865,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                                                staging_func=stage_dem,
                                                staging_func_args=args)
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.DEM_FILE: output_filepath
@@ -802,7 +881,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Utilizes the stage_ancillary_map.py script to stage the sub-regions for
         each of the ancillary maps used by DSWx-S1 (excluding the DEM).
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
@@ -811,18 +891,24 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         logger.info("working_dir : {}".format(working_dir))
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         bbox = metadata.get('bounding_box')
 
-        dynamic_ancillary_maps = self._pge_config.get(oc_const.GET_DSWX_S1_DYNAMIC_ANCILLARY_MAPS, {})
+        dynamic_ancillary_maps = self._pge_config.get(
+            oc_const.GET_DSWX_S1_DYNAMIC_ANCILLARY_MAPS, {})
 
         for dynamic_ancillary_map_name in dynamic_ancillary_maps.keys():
-            s3_bucket = dynamic_ancillary_maps.get(dynamic_ancillary_map_name, {}).get(oc_const.S3_BUCKET)
-            s3_key = dynamic_ancillary_maps.get(dynamic_ancillary_map_name, {}).get(oc_const.S3_KEY)
+            s3_bucket = dynamic_ancillary_maps.get(
+                dynamic_ancillary_map_name, {}).get(oc_const.S3_BUCKET)
+            s3_key = dynamic_ancillary_maps.get(
+                dynamic_ancillary_map_name, {}).get(oc_const.S3_KEY)
 
-            ancillary_type = dynamic_ancillary_map_name.replace("_", " ").capitalize()
-            output_filepath = os.path.join(working_dir, f'{dynamic_ancillary_map_name}.vrt')
+            ancillary_type = dynamic_ancillary_map_name.replace(
+                "_", " ").capitalize()
+            output_filepath = os.path.join(
+                working_dir, f'{dynamic_ancillary_map_name}.vrt')
 
             # Set up arguments to stage_ancillary_map.py
             # Note that since we provide an argparse.Namespace directly,
@@ -832,10 +918,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             args.s3_bucket = s3_bucket
             args.s3_key = s3_key
             args.bbox = bbox
-            args.margin = int(self._settings.get("DSWX_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
+            args.margin = int(self._settings.get(
+                "DSWX_S1", {}).get("ANCILLARY_MARGIN", 50))  # KM
             args.log_level = LogLevels.INFO.value
 
-            logger.info(f'Using margin value of {args.margin} with staged {ancillary_type}')
+            logger.info(
+                f'Using margin value of {args.margin} with staged {ancillary_type}')
 
             pge_metrics = self.get_opera_ancillary(
                 ancillary_type=ancillary_type,
@@ -844,7 +932,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                 staging_func_args=args
             )
 
-            write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+            write_pge_metrics(os.path.join(
+                working_dir, "pge_metrics.json"), pge_metrics)
 
             rc_params[dynamic_ancillary_map_name] = output_filepath
 
@@ -857,11 +946,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Determines the setting for the inundated vegetation enabled flag for
         DSWx-S1 processing, based on the set of input RTC granules to be processed.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         dataset_type = self._context["dataset_type"]
 
@@ -879,7 +970,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # Reduce each product filename to just the polarization field value
         available_polarizations = map(
-            lambda path: pattern.match(os.path.basename(path)).groupdict()['pol'],
+            lambda path: pattern.match(
+                os.path.basename(path)).groupdict()['pol'],
             list(polarization_layers)
         )
 
@@ -887,11 +979,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         unique_polarizations = set(list(available_polarizations))
 
         if len(unique_polarizations) == 0:
-            raise ValueError('No polarization fields parsed from input product set')
+            raise ValueError(
+                'No polarization fields parsed from input product set')
 
         # Disable the inundated vegetation check if only a single polarization
         # channel is available
-        rc_params[oc_const.INUNDATED_VEGETATION_ENABLED] = len(unique_polarizations) > 1
+        rc_params[oc_const.INUNDATED_VEGETATION_ENABLED] = len(
+            unique_polarizations) > 1
 
         logger.info(f"rc_params : {rc_params}")
 
@@ -902,11 +996,13 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Inserts the MGRS collection ID from the job metadata into the RunConfig
         for use with a DSWx-S1 job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         mgrs_set_id = metadata["mgrs_set_id"]
 
@@ -922,14 +1018,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         function of the total available.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         available_cores = os.cpu_count()
 
         # Use one less than the available cores for standard processing
         num_workers = max(available_cores - 1, 1)
 
-        logger.info(f"Allocating {num_workers} core(s) out of {available_cores} available")
+        logger.info(
+            f"Allocating {num_workers} core(s) out of {available_cores} available")
 
         rc_params = {
             "num_workers": str(num_workers)
@@ -960,7 +1058,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # detect GPU
         gpu_enabled = (
-            True if "gpus" in pge_docker_params.get("runtime_options", {}) else False
+            True if "gpus" in pge_docker_params.get(
+                "runtime_options", {}) else False
         )
         return {oc_const.GPU_ENABLED: gpu_enabled}
 
@@ -969,7 +1068,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Copies the static landcover file configured for use with a DSWx-HLS job
         to the job's local working area.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -978,14 +1078,17 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         output_filepath = os.path.join(working_dir, 'landcover.tif')
 
-        s3_bucket = self._pge_config.get(oc_const.GET_LANDCOVER, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_LANDCOVER, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_LANDCOVER, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_LANDCOVER, {}).get(oc_const.S3_KEY)
 
         pge_metrics = download_object_from_s3(
             s3_bucket, s3_key, output_filepath, filetype="Landcover"
         )
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.LANDCOVER_FILE: output_filepath
@@ -1006,7 +1109,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         keys = self._pge_config.get(oc_const.GET_METADATA).get("keys")
         try:
             metadata = self.__get_keys_from_dict(self._context, keys)
-            logger.info("Returning the following context metadata to the job_params: {}".format(json.dumps(metadata)))
+            logger.info("Returning the following context metadata to the job_params: {}".format(
+                json.dumps(metadata)))
             return metadata
         except Exception as e:
             logger.error(
@@ -1074,26 +1178,35 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                 oc_const.GET_PRODUCT_METADATA).get("keys", [])
             metadata = dict()
             metadata_obj = self._context.get(oc_const.PRODUCTS_METADATA)
-            logger.debug("Found Product Metadata: {}".format(json.dumps(metadata_obj)))
-            attribute_names = self._pge_config.get(oc_const.GET_PRODUCT_METADATA).get("attribute_names", {})
+            logger.debug("Found Product Metadata: {}".format(
+                json.dumps(metadata_obj)))
+            attribute_names = self._pge_config.get(
+                oc_const.GET_PRODUCT_METADATA).get("attribute_names", {})
             if isinstance(metadata_obj, list):
                 for product in metadata_obj:
-                    metadata.update(self.__get_keys_from_dict(product.get("metadata"), keys, attribute_names))
+                    metadata.update(self.__get_keys_from_dict(
+                        product.get("metadata"), keys, attribute_names))
             else:
-                metadata.update(self.__get_keys_from_dict(metadata_obj.get("metadata"), keys, attribute_names))
-            logger.info("Returning the following metadata to the job_params: {}".format(json.dumps(metadata)))
+                metadata.update(self.__get_keys_from_dict(
+                    metadata_obj.get("metadata"), keys, attribute_names))
+            logger.info("Returning the following metadata to the job_params: {}".format(
+                json.dumps(metadata)))
             logger.debug(json.dumps(metadata))
             return metadata
 
         except Exception as e:
-            logger.error("Could not extract product metadata: {}".format(traceback))
-            raise RuntimeError("Could not extract product metadata: {}".format(e))
+            logger.error(
+                "Could not extract product metadata: {}".format(traceback))
+            raise RuntimeError(
+                "Could not extract product metadata: {}".format(e))
 
     def get_product_version(self):
         """Assigns the product version specified in settings.yaml to PGE RunConfig"""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        version_key = self._pge_config.get(oc_const.GET_PRODUCT_VERSION, {}).get(oc_const.VERSION_KEY)
+        version_key = self._pge_config.get(
+            oc_const.GET_PRODUCT_VERSION, {}).get(oc_const.VERSION_KEY)
 
         product_version = self._settings.get(version_key)
 
@@ -1117,7 +1230,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         needed for CEOS metadata compliance.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         pge_shortname = oc_const.L2_RTC_S1[3:].upper()
 
@@ -1141,14 +1255,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         fraction of the total available.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         available_cores = os.cpu_count()
 
         # Use 3/4th of the available cores for standard processing
         num_workers = max(int(round((available_cores * 3) / 4)), 1)
 
-        logger.info(f"Allocating {num_workers} core(s) out of {available_cores} available")
+        logger.info(
+            f"Allocating {num_workers} core(s) out of {available_cores} available")
 
         rc_params = {
             "num_workers": str(num_workers)
@@ -1164,14 +1280,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         as a fraction of the total available.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         available_cores = os.cpu_count()
 
         # Use 1/2 of the available cores for static layer processing
         num_workers = max(int(round(available_cores / 2)), 1)
 
-        logger.info(f"Allocating {num_workers} core(s) out of {available_cores} available")
+        logger.info(
+            f"Allocating {num_workers} core(s) out of {available_cores} available")
 
         rc_params = {
             "num_workers": str(num_workers)
@@ -1186,9 +1304,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Gets the set of input S3 file paths that comprise the set of products
         to be processed by a DSWx-S1/DISP-S1 PGE job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         dataset_type = self._context["dataset_type"]
 
@@ -1196,7 +1316,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # Condense the full set of file paths to just a set of the directories
         # to be localized
-        product_set = set(map(lambda path: os.path.dirname(path), product_paths))
+        product_set = set(
+            map(lambda path: os.path.dirname(path), product_paths))
 
         rc_params = {
             oc_const.INPUT_FILE_PATHS: list(product_set)
@@ -1211,7 +1332,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Copies the set of static shoreline shapefiles configured for use with a
         DSWx-HLS job to the job's local working area.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -1220,17 +1342,21 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         rc_params = {}
 
-        s3_bucket = self._pge_config.get(oc_const.GET_SHORELINE_SHAPEFILES, {}).get(oc_const.S3_BUCKET)
-        s3_keys = self._pge_config.get(oc_const.GET_SHORELINE_SHAPEFILES, {}).get(oc_const.S3_KEYS)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_SHORELINE_SHAPEFILES, {}).get(oc_const.S3_BUCKET)
+        s3_keys = self._pge_config.get(
+            oc_const.GET_SHORELINE_SHAPEFILES, {}).get(oc_const.S3_KEYS)
 
         for s3_key in s3_keys:
-            output_filepath = os.path.join(working_dir, os.path.basename(s3_key))
+            output_filepath = os.path.join(
+                working_dir, os.path.basename(s3_key))
 
             pge_metrics = download_object_from_s3(
                 s3_bucket, s3_key, output_filepath, filetype="Shoreline Shapefile"
             )
 
-            write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+            write_pge_metrics(os.path.join(
+                working_dir, "pge_metrics.json"), pge_metrics)
 
             # Set up the main shapefile which is configured in the PGE RunConfig
             if output_filepath.endswith(".shp"):
@@ -1240,7 +1366,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         # Make sure the .shp file was included in the set of files localized from S3
         if not rc_params:
-            raise RuntimeError("No .shp file included with the localized Shoreline Shapefile dataset.")
+            raise RuntimeError(
+                "No .shp file included with the localized Shoreline Shapefile dataset.")
 
         logger.info(f"rc_params : {rc_params}")
 
@@ -1251,9 +1378,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Determines the polarization setting for the CSLC-S1 or RTC-S1 job based
         on the file name of the input SLC granule.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         slc_filename = metadata['FileName']
 
@@ -1268,7 +1397,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
         pol = result.groupdict()['pol']
 
-        logger.info(f'Parsed Polarization mode {pol} from SLC granule {slc_filename}')
+        logger.info(
+            f'Parsed Polarization mode {pol} from SLC granule {slc_filename}')
 
         polarization_map = {
             'SH': 'co-pol',
@@ -1292,23 +1422,28 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Copies the static burst database file configured for use with an SLC-based
         job to the job's local working area.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
 
         logger.info("working_dir : {}".format(working_dir))
 
-        output_filepath = os.path.join(working_dir, 'opera_burst_database.sqlite3')
+        output_filepath = os.path.join(
+            working_dir, 'opera_burst_database.sqlite3')
 
-        s3_bucket = self._pge_config.get(oc_const.GET_SLC_S1_BURST_DATABASE, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_SLC_S1_BURST_DATABASE, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_SLC_S1_BURST_DATABASE, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_SLC_S1_BURST_DATABASE, {}).get(oc_const.S3_KEY)
 
         pge_metrics = download_object_from_s3(
             s3_bucket, s3_key, output_filepath, filetype="Burst Database"
         )
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.BURST_DATABASE_FILE: output_filepath
@@ -1328,7 +1463,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         used with the stage_dem tool to obtain the appropriate DEM.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -1338,8 +1474,10 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         safe_file_path = self._job_params.get(oc_const.SAFE_FILE_PATH)
 
         # get s3_bucket param
-        s3_bucket = self._pge_config.get(oc_const.GET_SLC_S1_DEM, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.GET_SLC_S1_DEM, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_SLC_S1_DEM, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.GET_SLC_S1_DEM, {}).get(oc_const.S3_KEY)
 
         output_filepath = os.path.join(working_dir, 'dem.vrt')
 
@@ -1361,7 +1499,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         pge_name = self._pge_config.get('pge_name')
         pge_shortname = pge_name[3:].upper()
 
-        logger.info(f'Getting ANCILLARY_MARGIN setting for PGE {pge_shortname}')
+        logger.info(
+            f'Getting ANCILLARY_MARGIN setting for PGE {pge_shortname}')
 
         margin = self._settings.get(pge_shortname).get("ANCILLARY_MARGIN")
 
@@ -1385,7 +1524,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                                                staging_func=stage_dem,
                                                staging_func_args=args)
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.DEM_FILE: output_filepath
@@ -1400,7 +1540,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Obtains the S3 location of the orbit file configured for use with a
         CSLC-S1 or RTC-S1 job.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         s3_product_path = self._context['product_path']
 
@@ -1451,12 +1592,14 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         The SAFE file is manually localized here, so it will be available for
         use when obtaining the corresponding DEM.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
 
-        metadata: Dict[str, str] = self._context["product_metadata"]["metadata"]
+        metadata: Dict[str,
+                       str] = self._context["product_metadata"]["metadata"]
 
         s3_product_path = f"{self._context['product_path']}/{metadata['FileName']}"
         parsed_s3_url = urlparse(s3_product_path)
@@ -1481,7 +1624,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             s3_bucket, s3_key, output_filepath, filetype="SAFE"
         )
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.SAFE_FILE_PATH: output_filepath
@@ -1499,7 +1643,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         script is then used to perform the download.
 
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         s3_product_path = self._context['product_path']
 
@@ -1523,7 +1668,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         ionosphere_file_objects = []
         for ionosphere_file_type in VALID_IONOSPHERE_TYPES + ['RAP', 'FIN']:
             ionosphere_file_objects.extend(
-                list(filter(lambda s3_object: ionosphere_file_type in s3_object.key, s3_objects))
+                list(
+                    filter(lambda s3_object: ionosphere_file_type in s3_object.key, s3_objects))
             )
         logger.info(f"{ionosphere_file_objects}=")
 
@@ -1553,15 +1699,19 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         """
         Gets the S3 paths to the configured static ancillary input files.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         rc_params = {}
 
-        static_ancillary_products = self._pge_config.get(oc_const.GET_STATIC_ANCILLARY_FILES, {})
+        static_ancillary_products = self._pge_config.get(
+            oc_const.GET_STATIC_ANCILLARY_FILES, {})
 
         for static_ancillary_product in static_ancillary_products.keys():
-            s3_bucket = static_ancillary_products.get(static_ancillary_product, {}).get(oc_const.S3_BUCKET)
-            s3_key = static_ancillary_products.get(static_ancillary_product, {}).get(oc_const.S3_KEY)
+            s3_bucket = static_ancillary_products.get(
+                static_ancillary_product, {}).get(oc_const.S3_BUCKET)
+            s3_key = static_ancillary_products.get(
+                static_ancillary_product, {}).get(oc_const.S3_KEY)
 
             rc_params[static_ancillary_product] = f"s3://{s3_bucket}/{s3_key}"
 
@@ -1571,9 +1721,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
 
     def get_static_product_version(self):
         """Assigns the static layer product version specified in settings.yaml to PGE RunConfig"""
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
-        version_key = self._pge_config.get(oc_const.GET_STATIC_PRODUCT_VERSION, {}).get(oc_const.VERSION_KEY)
+        version_key = self._pge_config.get(
+            oc_const.GET_STATIC_PRODUCT_VERSION, {}).get(oc_const.VERSION_KEY)
 
         product_version = self._settings.get(version_key)
 
@@ -1596,7 +1748,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         PGE yaml config, or derives the appropriate bbox based on the tile code
         of the product's metadata (if available).
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -1606,12 +1759,16 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         output_filepath = os.path.join(working_dir, 'worldcover.vrt')
 
         # get s3 bucket/key params
-        s3_bucket = self._pge_config.get(oc_const.GET_WORLDCOVER, {}).get(oc_const.S3_BUCKET)
-        worldcover_ver = self._pge_config.get(oc_const.GET_WORLDCOVER, {}).get(oc_const.WORLDCOVER_VER)
-        worldcover_year = self._pge_config.get(oc_const.GET_WORLDCOVER, {}).get(oc_const.WORLDCOVER_YEAR)
+        s3_bucket = self._pge_config.get(
+            oc_const.GET_WORLDCOVER, {}).get(oc_const.S3_BUCKET)
+        worldcover_ver = self._pge_config.get(
+            oc_const.GET_WORLDCOVER, {}).get(oc_const.WORLDCOVER_VER)
+        worldcover_year = self._pge_config.get(
+            oc_const.GET_WORLDCOVER, {}).get(oc_const.WORLDCOVER_YEAR)
 
         # get bbox param
-        bbox = self._pge_config.get(oc_const.GET_WORLDCOVER, {}).get(oc_const.BBOX)
+        bbox = self._pge_config.get(
+            oc_const.GET_WORLDCOVER, {}).get(oc_const.BBOX)
 
         if bbox:
             # Convert to list if we were given a space-delimited string
@@ -1624,9 +1781,11 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         tile_code = get_input_hls_dataset_tile_code(self._context)
 
         if tile_code:
-            logger.info(f'Derived MGRS tile code {tile_code} from product metadata')
+            logger.info(
+                f'Derived MGRS tile code {tile_code} from product metadata')
         else:
-            logger.warning('Could not determine a tile code from product metadata')
+            logger.warning(
+                'Could not determine a tile code from product metadata')
 
         if bbox is None and tile_code is None:
             raise RuntimeError(
@@ -1645,10 +1804,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         args.worldcover_ver = worldcover_ver
         args.worldcover_year = worldcover_year
         args.outfile = output_filepath
-        args.margin = int(self._settings.get("DSWX_HLS", {}).get("ANCILLARY_MARGIN", 50))  # KM
+        args.margin = int(self._settings.get(
+            "DSWX_HLS", {}).get("ANCILLARY_MARGIN", 50))  # KM
         args.log_level = LogLevels.INFO.value
 
-        logger.info(f'Using margin value of {args.margin} with staged Worldcover')
+        logger.info(
+            f'Using margin value of {args.margin} with staged Worldcover')
 
         # Provide both the bounding box and tile code, stage_worldcover.py should
         # give preference to the tile code over the bbox if both are provided.
@@ -1660,7 +1821,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                                                staging_func=stage_worldcover,
                                                staging_func_args=args)
 
-        write_pge_metrics(os.path.join(working_dir, "pge_metrics.json"), pge_metrics)
+        write_pge_metrics(os.path.join(
+            working_dir, "pge_metrics.json"), pge_metrics)
 
         rc_params = {
             oc_const.WORLDCOVER_FILE: output_filepath
@@ -1677,7 +1839,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         String replacement is determined by a pattern mapping associated with
         the chimera configuration for this function.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -1703,10 +1866,12 @@ class OperaPreConditionFunctions(PreConditionFunctions):
             try:
                 value = self._job_params[parameter]
             except KeyError:
-                raise RuntimeError(f'No value for parameter {parameter} in _job_params')
+                raise RuntimeError(
+                    f'No value for parameter {parameter} in _job_params')
 
             logger.info(f'Replacing pattern {pattern} with value {value}')
-            instantiated_contents = instantiated_contents.replace(pattern, str(value))
+            instantiated_contents = instantiated_contents.replace(
+                pattern, str(value))
 
         # Strip the .tmpl suffix to derive the instantiated output filename
         output_filepath = output_filepath.replace(".tmpl", "")
@@ -1729,7 +1894,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         Sets the DAAC product type
         :return: a DAAC product type that will use to populate collection value in CNM-S msg
         """
-        logger.info("Calling function {} function".format(oc_const.SET_DAAC_PRODUCT_TYPE))
+        logger.info("Calling function {} function".format(
+            oc_const.SET_DAAC_PRODUCT_TYPE))
         template = self._pge_config.get(oc_const.SET_DAAC_PRODUCT_TYPE, {}).get(
             "template", None
         )
@@ -1759,7 +1925,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                 extra_met[met_key] = self._job_params.get(job_params_key)
             else:
                 raise RuntimeError(
-                    "Cannot find {} in the job_params dictionary".format(job_params_key)
+                    "Cannot find {} in the job_params dictionary".format(
+                        job_params_key)
                 )
         return {oc_const.EXTRA_PGE_OUTPUT_METADATA: extra_met}
 
@@ -1770,7 +1937,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         for use with testing of PGE SCIFLO workflows, and should not be included
         as a precondition function for any PGE's in production.
         """
-        logger.info(f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
+        logger.info(
+            f"Evaluating precondition {inspect.currentframe().f_code.co_name}")
 
         # get the working directory
         working_dir = get_working_dir()
@@ -1778,12 +1946,15 @@ class OperaPreConditionFunctions(PreConditionFunctions):
         rc_params = {}
 
         # get s3_bucket param
-        s3_bucket = self._pge_config.get(oc_const.SET_SAMPLE_PRODUCT_METADATA, {}).get(oc_const.S3_BUCKET)
-        s3_key = self._pge_config.get(oc_const.SET_SAMPLE_PRODUCT_METADATA, {}).get(oc_const.S3_KEY)
+        s3_bucket = self._pge_config.get(
+            oc_const.SET_SAMPLE_PRODUCT_METADATA, {}).get(oc_const.S3_BUCKET)
+        s3_key = self._pge_config.get(
+            oc_const.SET_SAMPLE_PRODUCT_METADATA, {}).get(oc_const.S3_KEY)
 
         output_filepath = os.path.join(working_dir, os.path.basename(s3_key))
 
-        download_object_from_s3(s3_bucket, s3_key, output_filepath, filetype="Sample product metadata")
+        download_object_from_s3(
+            s3_bucket, s3_key, output_filepath, filetype="Sample product metadata")
 
         # read the sample product metadata and assign it to the local context
         with open(output_filepath, "r") as infile:
@@ -1794,7 +1965,8 @@ class OperaPreConditionFunctions(PreConditionFunctions):
                 "Product metadata file does not contain expected keys (dataset/metadata)."
             )
 
-        logger.info(f"Read product metadata for dataset {product_metadata['dataset']}")
+        logger.info(
+            f"Read product metadata for dataset {product_metadata['dataset']}")
 
         # assign the read product metadata into the local context, so it can be
         # used by downstream precondition functions
