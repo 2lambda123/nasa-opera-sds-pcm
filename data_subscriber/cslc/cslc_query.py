@@ -1,25 +1,22 @@
 #!/usr/bin/env python3
 
+import asyncio
 import copy
 import logging
 from collections import defaultdict
-import asyncio
 from datetime import datetime, timedelta
 
-from data_subscriber.cmr import async_query_cmr, CMR_TIME_FORMAT
-from data_subscriber.cslc_utils import (
-    localize_disp_frame_burst_hist,
-    build_cslc_native_ids,
-    parse_cslc_native_id,
-    process_disp_frame_burst_hist,
-    download_batch_id_forward_reproc,
-    split_download_batch_id,
-    parse_cslc_file_name,
-    CSLCDependency,
-)
+from data_subscriber.cmr import CMR_TIME_FORMAT, async_query_cmr
+from data_subscriber.cslc.cslc_catalog import KCSLCProductCatalog
+from data_subscriber.cslc_utils import (CSLCDependency, build_cslc_native_ids,
+                                        download_batch_id_forward_reproc,
+                                        localize_disp_frame_burst_hist,
+                                        parse_cslc_file_name,
+                                        parse_cslc_native_id,
+                                        process_disp_frame_burst_hist,
+                                        split_download_batch_id)
 from data_subscriber.query import CmrQuery, DateTimeRange
 from data_subscriber.url import cslc_unique_id
-from data_subscriber.cslc.cslc_catalog import KCSLCProductCatalog
 
 K_MULT_FACTOR = 3  # TODO: This should be a setting in probably settings.yaml.
 EARLIEST_POSSIBLE_CSLC_DATE = "2016-01-01T00:00:00Z"
