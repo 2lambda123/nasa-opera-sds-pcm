@@ -26,23 +26,21 @@ forward_arguments = [
 def test_extend_additional_records():
     """Given a list of granules, test that we are extending additional granules for bursts that belong to two frames"""
     forward_args = create_parser().parse_args(forward_arguments)
-    c_query = cslc_query.CslcCmrQuery(
-        forward_args, None, None, None, None, None, cslc_utils.DISP_FRAME_BURST_MAP_HIST
-    )
+    c_query = cslc_query.CslcCmrQuery(forward_args, None, None, None, None,
+                                      None,
+                                      cslc_utils.DISP_FRAME_BURST_MAP_HIST)
 
     granules = []
     # frame 11115, 11116
-    granules.append(
-        {
-            "granule_id": "OPERA_L2_CSLC-S1_T042-088921-IW1_20160705T140755Z_20240425T204418Z_S1A_VV_v1.1"
-        }
-    )
+    granules.append({
+        "granule_id":
+        "OPERA_L2_CSLC-S1_T042-088921-IW1_20160705T140755Z_20240425T204418Z_S1A_VV_v1.1"
+    })
     # frames 11115
-    granules.append(
-        {
-            "granule_id": "OPERA_L2_CSLC-S1_T042-088919-IW1_20160705T140750Z_20240425T204418Z_S1A_VV_v1.1"
-        }
-    )
+    granules.append({
+        "granule_id":
+        "OPERA_L2_CSLC-S1_T042-088919-IW1_20160705T140750Z_20240425T204418Z_S1A_VV_v1.1"
+    })
 
     c_query.extend_additional_records(granules)
 
@@ -78,8 +76,7 @@ def test_reprocessing_by_native_id(caplog):
     c_query.query_cmr(reproc_args, None, None, None, None, datetime.utcnow())
     assert (
         "native_id='OPERA_L2_CSLC-S1_T027-056778-IW1_20231008T133102Z_20231009T204457Z_S1A_VV_v1.0' is not found in the DISP-S1 Burst ID Database JSON. Nothing to process"
-        in caplog.text
-    )
+        in caplog.text)
 
 
 def test_historical_query(caplog):
@@ -131,7 +128,8 @@ def test_reprocessing_by_dates():
         "--no-schedule-download",
     ]
     reproc_args = create_parser().parse_args(reprocessing_arguments)
-    query_timerange = DateTimeRange(reproc_args.start_date, reproc_args.end_date)
+    query_timerange = DateTimeRange(reproc_args.start_date,
+                                    reproc_args.end_date)
     c_query = cslc_query.CslcCmrQuery(
         reproc_args,
         None,
@@ -141,9 +139,8 @@ def test_reprocessing_by_dates():
         {"DEFAULT_DISP_S1_QUERY_GRACE_PERIOD_MINUTES": 60},
         cslc_utils.DISP_FRAME_BURST_MAP_HIST,
     )
-    cr = c_query.query_cmr(
-        reproc_args, None, None, None, query_timerange, datetime.utcnow()
-    )
+    cr = c_query.query_cmr(reproc_args, None, None, None, query_timerange,
+                           datetime.utcnow())
     args = cr.cr_frame.f_locals["args"]
     assert args.collection == "OPERA_L2_CSLC-S1_V1"
     assert args.start_date == "2021-01-24T23:00:00Z"

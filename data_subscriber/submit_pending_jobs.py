@@ -46,9 +46,8 @@ def configure_logger():
     logger.addFilter(NoLogUtilsFilter())
 
 
-def condition_satisfied(
-    job_source, es, disp_burst_map, query_args, token, cmr, settings
-):
+def condition_satisfied(job_source, es, disp_burst_map, query_args, token, cmr,
+                        settings):
     """
 
     :param job_source:
@@ -67,9 +66,8 @@ def condition_satisfied(
 
     do_submit_job = True
 
-    cslc_dependency = CSLCDependency(
-        k, m, disp_burst_map, query_args, token, cmr, settings
-    )
+    cslc_dependency = CSLCDependency(k, m, disp_burst_map, query_args, token,
+                                     cmr, settings)
 
     # Check if the compressed cslc has been generated
     logger.info(
@@ -96,9 +94,8 @@ def condition_satisfied(
     if "acq_time_list" in job_source:
         logger.info("Evaluating ECMWF availability")
         if ecmwf_satisfied(job_source["acq_time_list"]):
-            logger.info(
-                "ECMWF satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index
-            )
+            logger.info("ECMWF satisfied for frame_id: %s, acq_index: %s",
+                        frame_id, acq_index)
         else:
             logger.info(
                 "ECMWF NOT satisfied for frame_id: %s, acq_index: %s",
@@ -123,17 +120,16 @@ def run(argv: list[str]):
 
     job_submission_tasks = []
     disp_burst_map, burst_to_frames, datetime_to_frames = (
-        localize_disp_frame_burst_hist()
-    )
+        localize_disp_frame_burst_hist())
     query_args = create_parser().parse_args(
-        ["query", "-c", "OPERA_L2_CSLC-S1_V1", "--processing-mode=forward"]
-    )
+        ["query", "-c", "OPERA_L2_CSLC-S1_V1", "--processing-mode=forward"])
 
     es = es_conn_util.get_es_connection(logger)
     es_conn = CSLCProductCatalog(logging.getLogger(__name__))
 
     settings = SettingsConf().cfg
-    cmr, token, username, password, edl = get_cmr_token(query_args.endpoint, settings)
+    cmr, token, username, password, edl = get_cmr_token(
+        query_args.endpoint, settings)
 
     # Get unsubmitted jobs from Elasticsearch GRQ
     unsubmitted = get_pending_download_jobs(es)
@@ -141,9 +137,8 @@ def run(argv: list[str]):
 
     # For each of the unsubmitted jobs, check if their submission conditions are satisfied
     for job in unsubmitted:
-        do_submit_job = condition_satisfied(
-            job["_source"], es, disp_burst_map, query_args, token, cmr, settings
-        )
+        do_submit_job = condition_satisfied(job["_source"], es, disp_burst_map,
+                                            query_args, token, cmr, settings)
 
         if do_submit_job:
             logger.info("Submitting job")
@@ -161,8 +156,8 @@ def run(argv: list[str]):
 
             # Also mark as submitted in ES pending downloads
             logger.info(
-                mark_pending_download_job_submitted(es, job["_id"], download_job_id)
-            )
+                mark_pending_download_job_submitted(es, job["_id"],
+                                                    download_job_id))
 
             job_submission_tasks.append(download_job_id)
 

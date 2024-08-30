@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 
 class CmrQuery:
     """ """
+
     def __init__(self, args, token, es_conn, cmr, job_id, settings):
         self.args = args
         self.token = token
@@ -51,7 +52,8 @@ class CmrQuery:
         """ """
         pass
 
-    def run_query(self, args, token, es_conn: ProductCatalog, cmr, job_id, settings):
+    def run_query(self, args, token, es_conn: ProductCatalog, cmr, job_id,
+                  settings):
         """
 
         :param args:
@@ -67,7 +69,8 @@ class CmrQuery:
         query_timerange: DateTimeRange = get_query_timerange(args, now)
 
         logger.info("CMR query STARTED")
-        granules = self.query_cmr(args, token, cmr, settings, query_timerange, now)
+        granules = self.query_cmr(args, token, cmr, settings, query_timerange,
+                                  now)
         logger.info("CMR query FINISHED")
 
         # Get rid of duplicate granules. This happens often for CSLC and TODO: probably RTC
@@ -85,15 +88,14 @@ class CmrQuery:
 
             # Fetch all necessary geojson files from S3
             localize_include_exclude(args)
-            granules[:] = filter_granules_by_regions(
-                granules, args.include_regions, args.exclude_regions
-            )
+            granules[:] = filter_granules_by_regions(granules,
+                                                     args.include_regions,
+                                                     args.exclude_regions)
 
         # TODO: This function only applies to CSLC, merge w RTC at some point
         # Generally this function returns the same granules as input but for CSLC (and RTC if also refactored),
         # triggering logic is applied to granules to determine which ones need to be downloaded
         download_granules = self.determine_download_granules(granules)
-
         """TODO: Optional. For CSLC query jobs, make sure that we got all the bursts here according to database json.
         Otherwise, fail this job"""
 
@@ -109,15 +111,19 @@ class CmrQuery:
                 f"{args.subparser_name=}. Skipping download job submission. Download will be performed directly."
             )
 
-            if COLLECTION_TO_PRODUCT_TYPE_MAP[args.collection] == ProductType.RTC:
-                args.provider = COLLECTION_TO_PROVIDER_TYPE_MAP[args.collection]
+            if COLLECTION_TO_PRODUCT_TYPE_MAP[
+                    args.collection] == ProductType.RTC:
+                args.provider = COLLECTION_TO_PROVIDER_TYPE_MAP[
+                    args.collection]
                 args.batch_ids = self.affected_mgrs_set_id_acquisition_ts_cycle_indexes
-            elif COLLECTION_TO_PRODUCT_TYPE_MAP[args.collection] == ProductType.CSLC:
-                args.provider = COLLECTION_TO_PROVIDER_TYPE_MAP[args.collection]
+            elif COLLECTION_TO_PRODUCT_TYPE_MAP[
+                    args.collection] == ProductType.CSLC:
+                args.provider = COLLECTION_TO_PROVIDER_TYPE_MAP[
+                    args.collection]
                 args.chunk_size = args.k
                 args.batch_ids = list(
-                    set(granule["download_batch_id"] for granule in download_granules)
-                )
+                    set(granule["download_batch_id"]
+                        for granule in download_granules))
 
             return {"download_granules": download_granules}
 
@@ -135,13 +141,12 @@ class CmrQuery:
 
         if COLLECTION_TO_PRODUCT_TYPE_MAP[args.collection] == ProductType.RTC:
             job_submission_tasks = submit_rtc_download_job_submissions_tasks(
-                batch_id_to_products_map.keys(), args, settings
-            )
-            results = asyncio.gather(*job_submission_tasks, return_exceptions=True)
+                batch_id_to_products_map.keys(), args, settings)
+            results = asyncio.gather(*job_submission_tasks,
+                                     return_exceptions=True)
         else:
             job_submission_tasks = self.download_job_submission_handler(
-                download_granules, query_timerange
-            )
+                download_granules, query_timerange)
             results = job_submission_tasks
 
         logger.info(f"{len(results)=}")
@@ -171,8 +176,7 @@ class CmrQuery:
 
         """
         granules = asyncio.run(
-            async_query_cmr(args, token, cmr, settings, timerange, now)
-        )
+            async_query_cmr(args, token, cmr, settings, timerange, now))
         return granules
 
     def eliminate_duplicate_granules(self, granules):
@@ -189,8 +193,7 @@ class CmrQuery:
 
             if granule_id in granule_dict:
                 if granule.get("revision_id") > granule_dict[granule_id].get(
-                    "revision_id"
-                ):
+                        "revision_id"):
                     granule_dict[granule_id] = granule
             else:
                 granule_dict[granule_id] = granule
@@ -241,8 +244,7 @@ class CmrQuery:
             granule_id = granule.get("granule_id")
 
             additional_fields = self.prepare_additional_fields(
-                granule, self.args, granule_id
-            )
+                granule, self.args, granule_id)
 
             update_url_index(
                 self.es_conn,
@@ -251,9 +253,9 @@ class CmrQuery:
                 self.job_id,
                 query_dt,
                 temporal_extent_beginning_dt=dateutil.parser.isoparse(
-                    granule["temporal_extent_beginning_datetime"]
-                ),
-                revision_date_dt=dateutil.parser.isoparse(granule["revision_date"]),
+                    granule["temporal_extent_beginning_datetime"]),
+                revision_date_dt=dateutil.parser.isoparse(
+                    granule["revision_date"]),
                 **additional_fields,
             )
 
@@ -295,7 +297,8 @@ class CmrQuery:
                     # For CSLC force chunk_size to be the same as k in args
                     if self.args.k:
                         self.args.chunk_size = self.args.k
-                elif product_type in (ProductType.RTC, ProductType.CSLC_STATIC):
+                elif product_type in (ProductType.RTC,
+                                      ProductType.CSLC_STATIC):
                     raise NotImplementedError(
                         f"Download job submission is not supported for product type {product_type}"
                     )
@@ -308,18 +311,15 @@ class CmrQuery:
                 for filter_url in granule.get("filtered_urls"):
                     if product_type == ProductType.CSLC:
                         batch_id_to_urls_map[granule["download_batch_id"]].add(
-                            filter_url
-                        )
+                            filter_url)
                     else:
-                        batch_id_to_urls_map[
-                            url_grouping_func(granule_id, revision_id)
-                        ].add(filter_url)
+                        batch_id_to_urls_map[url_grouping_func(
+                            granule_id, revision_id)].add(filter_url)
 
         logger.debug(f"{batch_id_to_urls_map=}")
 
         job_submission_tasks = self.submit_download_job_submissions_tasks(
-            batch_id_to_urls_map, query_timerange
-        )
+            batch_id_to_urls_map, query_timerange)
 
         return job_submission_tasks
 
@@ -331,9 +331,8 @@ class CmrQuery:
         """
         return chunked(batch_id_to_urls_map.items(), n=self.args.chunk_size)
 
-    def submit_download_job_submissions_tasks(
-        self, batch_id_to_urls_map, query_timerange
-    ):
+    def submit_download_job_submissions_tasks(self, batch_id_to_urls_map,
+                                              query_timerange):
         """
 
         :param batch_id_to_urls_map:
@@ -343,7 +342,8 @@ class CmrQuery:
         job_submission_tasks = []
         logger.info(f"{self.args.chunk_size=}")
 
-        if COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection] == ProductType.CSLC:
+        if COLLECTION_TO_PRODUCT_TYPE_MAP[
+                self.args.collection] == ProductType.CSLC:
             cslc_dependency = CSLCDependency(
                 self.args.k,
                 self.args.m,
@@ -364,24 +364,28 @@ class CmrQuery:
             # If we are downlaoding SLC input data, we will compute payload hash using the granule_id without the revision_id
             # NOTE: This will only work properly if the chunk size is 1 which should always be the case for SLC downloads
             payload_hash = None
-            if COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection] == ProductType.SLC:
+            if COLLECTION_TO_PRODUCT_TYPE_MAP[
+                    self.args.collection] == ProductType.SLC:
                 granule_to_hash = ""
                 for batch_id in chunk_batch_ids:
                     granule_id, revision_id = self.es_conn.granule_and_revision(
-                        batch_id
-                    )
+                        batch_id)
                     granule_to_hash += granule_id
 
-                payload_hash = hashlib.md5(granule_to_hash.encode()).hexdigest()
+                payload_hash = hashlib.md5(
+                    granule_to_hash.encode()).hexdigest()
 
             logger.info(f"{chunk_batch_ids=}")
             logger.info(f"{payload_hash=}")
             logger.debug(f"{chunk_urls=}")
 
-            params = self.create_download_job_params(query_timerange, chunk_batch_ids)
+            params = self.create_download_job_params(query_timerange,
+                                                     chunk_batch_ids)
 
-            product_type = COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection].lower()
-            if COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection] == ProductType.CSLC:
+            product_type = COLLECTION_TO_PRODUCT_TYPE_MAP[
+                self.args.collection].lower()
+            if COLLECTION_TO_PRODUCT_TYPE_MAP[
+                    self.args.collection] == ProductType.CSLC:
 
                 acq_time_list = []
                 block_download = False
@@ -395,7 +399,7 @@ class CmrQuery:
                         filename = Path(url).name[:-3]
                         _, acq_time = parse_cslc_file_name(filename)
                         if (
-                            acq_time < earliest_acq_time
+                                acq_time < earliest_acq_time
                         ):  # Time is in format YYYYMMDDTHHMMSSZ so this comparison works
                             earliest_acq_time = acq_time
                     acq_time_list.append(earliest_acq_time)
@@ -411,8 +415,7 @@ class CmrQuery:
                 # Instead, save all the job info in ES and wait for the next query to come in.
                 # Any acquisition index will work because all batches require the same compressed cslcs
                 if not cslc_dependency.compressed_cslc_satisfied(
-                    frame_id, acq_indices[0], self.es_conn.es_util
-                ):
+                        frame_id, acq_indices[0], self.es_conn.es_util):
                     logger.info(
                         f"Not all compressed CSLCs are satisfied so this download job is in pending state until they are satisfied"
                     )
@@ -476,13 +479,13 @@ class CmrQuery:
         args = self.args
         download_job_params = [
             {
-                "name": "batch_ids",
-                "value": (
-                    "--batch-ids " + " ".join(chunk_batch_ids)
-                    if chunk_batch_ids
-                    else ""
-                ),
-                "from": "value",
+                "name":
+                "batch_ids",
+                "value":
+                ("--batch-ids " +
+                 " ".join(chunk_batch_ids) if chunk_batch_ids else ""),
+                "from":
+                "value",
             },
             {
                 "name": "smoke_run",
@@ -516,7 +519,8 @@ class CmrQuery:
             },
             {
                 "name": "chunk_size",
-                "value": f"--chunk-size={args.chunk_size}" if args.chunk_size else "",
+                "value":
+                f"--chunk-size={args.chunk_size}" if args.chunk_size else "",
                 "from": "value",
             },
             {
@@ -663,18 +667,14 @@ def get_query_timerange(args, now: datetime, silent=False):
     :param silent:  (Default value = False)
 
     """
-    now_minus_minutes_dt = (
-        (now - timedelta(minutes=args.minutes))
-        if not args.native_id
-        else dateutil.parser.isoparse("1900-01-01T00:00:00Z")
-    )
+    now_minus_minutes_dt = ((now - timedelta(minutes=args.minutes))
+                            if not args.native_id else
+                            dateutil.parser.isoparse("1900-01-01T00:00:00Z"))
 
-    start_date = (
-        args.start_date
-        if args.start_date
-        else now_minus_minutes_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
-    )
-    end_date = args.end_date if args.end_date else now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    start_date = (args.start_date if args.start_date else
+                  now_minus_minutes_dt.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    end_date = args.end_date if args.end_date else now.strftime(
+        "%Y-%m-%dT%H:%M:%SZ")
 
     query_timerange = DateTimeRange(start_date, end_date)
     if not silent:
@@ -693,4 +693,5 @@ def process_frame_burst_db():
             # output_filepath = os.path.join(working_dir, key)
             download_from_s3(bucket, key, key)
     except Exception as e:
-        raise Exception("Exception while fetching geojson file: %s. " % key + str(e))
+        raise Exception("Exception while fetching geojson file: %s. " % key +
+                        str(e))
