@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-'''List and show all pending jobs'''
+"""List and show all pending jobs"""
 
 import logging
 import sys
@@ -28,9 +28,18 @@ def run(argv: list[str]):
     # For each of the unsubmitted jobs, check if their compressed cslcs have been generated
     count = 1
     for job in unsubmitted:
-        s = job['_source']
-        print("%05d" % count, "Type:", s['job_type'], ", Queue:", s['job_queue'], ", Acq Time List:",
-              s['acq_time_list'], ", Job Params:", [f"{f['value']}" for f in s['job_params']])
+        s = job["_source"]
+        print(
+            "%05d" % count,
+            "Type:",
+            s["job_type"],
+            ", Queue:",
+            s["job_queue"],
+            ", Acq Time List:",
+            s["acq_time_list"],
+            ", Job Params:",
+            [f"{f['value']}" for f in s["job_params"]],
+        )
 
 
 if __name__ == "__main__":

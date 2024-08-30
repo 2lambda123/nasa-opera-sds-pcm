@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-'''Goes through the list of pending jobs and submits them to the job queue
-after checking if they are ready to be submitted'''
+"""Goes through the list of pending jobs and submits them to the job queue
+after checking if they are ready to be submitted"""
 
 import boto3
 import logging
@@ -13,8 +13,13 @@ from data_subscriber.cmr import get_cmr_token
 from data_subscriber.parser import create_parser
 from data_subscriber.query import submit_download_job
 from data_subscriber import es_conn_util
-from cslc_utils import (get_pending_download_jobs, localize_disp_frame_burst_hist, mark_pending_download_job_submitted,
-                        CSLCDependency, ecmwf_satisfied)
+from cslc_utils import (
+    get_pending_download_jobs,
+    localize_disp_frame_burst_hist,
+    mark_pending_download_job_submitted,
+    CSLCDependency,
+    ecmwf_satisfied,
+)
 from data_subscriber.cslc.cslc_catalog import CSLCProductCatalog
 
 
@@ -37,41 +42,59 @@ def configure_logger():
     logger_elasticsearch = logging.getLogger("elasticsearch")
     logger_elasticsearch.addFilter(NoBaseFilter())
 
-    boto3.set_stream_logger(name='botocore.credentials', level=logging.ERROR)
+    boto3.set_stream_logger(name="botocore.credentials", level=logging.ERROR)
 
     logger.addFilter(NoLogUtilsFilter())
 
 
-def condition_satisfied(job_source, es, disp_burst_map, query_args, token, cmr, settings):
-    k = job_source['k']
-    m = job_source['m']
-    frame_id = job_source['frame_id']
-    acq_index = job_source['acq_index']
+def condition_satisfied(
+    job_source, es, disp_burst_map, query_args, token, cmr, settings
+):
+    k = job_source["k"]
+    m = job_source["m"]
+    frame_id = job_source["frame_id"]
+    acq_index = job_source["acq_index"]
 
     do_submit_job = True
 
     cslc_dependency = CSLCDependency(
-        k, m, disp_burst_map, query_args, token, cmr, settings)
+        k, m, disp_burst_map, query_args, token, cmr, settings
+    )
 
     # Check if the compressed cslc has been generated
-    logger.info("Evaluating for frame_id: %s, acq_index: %s, k: %s, m: %s",
-                frame_id, acq_index, k, m)
+    logger.info(
+        "Evaluating for frame_id: %s, acq_index: %s, k: %s, m: %s",
+        frame_id,
+        acq_index,
+        k,
+        m,
+    )
     if cslc_dependency.compressed_cslc_satisfied(frame_id, acq_index, es):
         logger.info(
-            "Compressed CSLC satisfied for frame_id: %s, acq_index: %s.", frame_id, acq_index)
+            "Compressed CSLC satisfied for frame_id: %s, acq_index: %s.",
+            frame_id,
+            acq_index,
+        )
     else:
         logger.info(
-            "Compressed CSLC NOT satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+            "Compressed CSLC NOT satisfied for frame_id: %s, acq_index: %s",
+            frame_id,
+            acq_index,
+        )
         do_submit_job = False
 
     if "acq_time_list" in job_source:
         logger.info("Evaluating ECMWF availability")
-        if ecmwf_satisfied(job_source['acq_time_list']):
+        if ecmwf_satisfied(job_source["acq_time_list"]):
             logger.info(
-                "ECMWF satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+                "ECMWF satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index
+            )
         else:
             logger.info(
-                "ECMWF NOT satisfied for frame_id: %s, acq_index: %s", frame_id, acq_index)
+                "ECMWF NOT satisfied for frame_id: %s, acq_index: %s",
+                frame_id,
+                acq_index,
+            )
             # TODO: Print out individual acquisition time windows for which ECMWF is not satisfied
             do_submit_job = False
     else:
@@ -84,16 +107,18 @@ def run(argv: list[str]):
     logger.info(f"{argv=}")
 
     job_submission_tasks = []
-    disp_burst_map, burst_to_frames, datetime_to_frames = localize_disp_frame_burst_hist()
+    disp_burst_map, burst_to_frames, datetime_to_frames = (
+        localize_disp_frame_burst_hist()
+    )
     query_args = create_parser().parse_args(
-        ["query", "-c", "OPERA_L2_CSLC-S1_V1", "--processing-mode=forward"])
+        ["query", "-c", "OPERA_L2_CSLC-S1_V1", "--processing-mode=forward"]
+    )
 
     es = es_conn_util.get_es_connection(logger)
     es_conn = CSLCProductCatalog(logging.getLogger(__name__))
 
     settings = SettingsConf().cfg
-    cmr, token, username, password, edl = get_cmr_token(
-        query_args.endpoint, settings)
+    cmr, token, username, password, edl = get_cmr_token(query_args.endpoint, settings)
 
     # Get unsubmitted jobs from Elasticsearch GRQ
     unsubmitted = get_pending_download_jobs(es)
@@ -102,28 +127,33 @@ def run(argv: list[str]):
     # For each of the unsubmitted jobs, check if their submission conditions are satisfied
     for job in unsubmitted:
         do_submit_job = condition_satisfied(
-            job['_source'], es, disp_burst_map, query_args, token, cmr, settings)
+            job["_source"], es, disp_burst_map, query_args, token, cmr, settings
+        )
 
         if do_submit_job:
             logger.info("Submitting job")
-            download_job_id = submit_download_job(release_version=job['_source']['release_version'],
-                                                  product_type=job['_source']['product_type'],
-                                                  params=job['_source']['job_params'],
-                                                  job_queue=job['_source']['job_queue'],
-                                                  job_name=job['_source']['job_name'])
+            download_job_id = submit_download_job(
+                release_version=job["_source"]["release_version"],
+                product_type=job["_source"]["product_type"],
+                params=job["_source"]["job_params"],
+                job_queue=job["_source"]["job_queue"],
+                job_name=job["_source"]["job_name"],
+            )
 
             # Record download job id in ES cslc_catalog
-            for batch_id in job['_source']['batch_ids']:
+            for batch_id in job["_source"]["batch_ids"]:
                 es_conn.mark_download_job_id(batch_id, download_job_id)
 
             # Also mark as submitted in ES pending downloads
-            logger.info(mark_pending_download_job_submitted(
-                es, job['_id'], download_job_id))
+            logger.info(
+                mark_pending_download_job_submitted(es, job["_id"], download_job_id)
+            )
 
             job_submission_tasks.append(download_job_id)
 
     logger.info(
-        f"Submitted {len(job_submission_tasks)} CSLC Download Jobs {job_submission_tasks}")
+        f"Submitted {len(job_submission_tasks)} CSLC Download Jobs {job_submission_tasks}"
+    )
 
 
 if __name__ == "__main__":
