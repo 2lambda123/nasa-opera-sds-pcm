@@ -21,13 +21,11 @@ from tabulate import tabulate
 # Constants
 CMR_GRANULES_API_ENDPOINT = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
 CMR_UAT_GRANULES_API_ENDPOINT = (
-    "https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json"
-)
+    "https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json")
 BURST_AND_DATE_GRANULE_PATTERN = r"_T(\d+)-(\d+)-([A-Z]+\d+)_(\d+T\d+Z)_(\d+T\d+Z)"
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
 # NOTE: This should be contributed to https://github.com/nasa/python_cmr to be included as part of the library
 
@@ -120,8 +118,7 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
         logging.debug(f"Fetching {url} with {params}")
         batch_granules = fetch_with_backoff(url, params)
         logging.debug(
-            f"Fetch success: {len(batch_granules)} batch granules downloaded."
-        )
+            f"Fetch success: {len(batch_granules)} batch granules downloaded.")
     except Exception as e:
         logging.error(f"Failed to fetch granules for page {page_num}: {e}")
         batch_granules = []
@@ -193,12 +190,12 @@ def get_total_granules(url, params, retries=5, backoff_factor=1):
             return response["hits"]
         except RuntimeError as e:
             if attempt < retries - 1:
-                sleep_time = backoff_factor * (2**attempt) + random.uniform(0, 1)
+                sleep_time = backoff_factor * (2**attempt) + random.uniform(
+                    0, 1)
                 time.sleep(sleep_time)
             else:
                 raise RuntimeError(
-                    "Failed to get total granules after several attempts."
-                )
+                    "Failed to get total granules after several attempts.")
 
 
 def get_burst_ids_from_file(filename):
@@ -264,8 +261,7 @@ def generate_url_params(
     # Ensure start and end times are provided
     if not start or not end:
         raise ValueError(
-            "Start and end times are required if no file input is provided."
-        )
+            "Start and end times are required if no file input is provided.")
 
     # Base URL for granule searches
     base_url = CMR_GRANULES_API_ENDPOINT
@@ -276,7 +272,8 @@ def generate_url_params(
     # Set CMR param to ignore granule searches prior to a certain date
     start_datetime = datetime.fromisoformat(start.replace("Z", "+00:00"))
     # 30 days by default design - check with PCM team
-    temporal_start_datetime = start_datetime - timedelta(days=window_length_days)
+    temporal_start_datetime = start_datetime - timedelta(
+        days=window_length_days)
     params["temporal"] = f"{temporal_start_datetime.isoformat()}"
 
     # Set time query type for CMR
@@ -292,9 +289,12 @@ def generate_url_params(
     return base_url, params
 
 
-def get_granules_from_query(
-    start, end, timestamp, endpoint, provider="ASF", shortname="OPERA_L2_RTC-S1_V1"
-):
+def get_granules_from_query(start,
+                            end,
+                            timestamp,
+                            endpoint,
+                            provider="ASF",
+                            shortname="OPERA_L2_RTC-S1_V1"):
     """Fetches granule metadata from the CMR API within a specified temporal range using parallel requests.
 
     :start: Start time in ISO 8601 format.
@@ -343,12 +343,10 @@ def get_granules_from_query(
     print()
 
     # Main loop to fetch granules, update progress bar, and extract burst_ids
-    with tqdm.tqdm(
-        total=total_granules, desc="Fetching granules", position=0
-    ) as pbar_global:
+    with tqdm.tqdm(total=total_granules, desc="Fetching granules",
+                   position=0) as pbar_global:
         downloaded_batches = multiprocessing.Value(
-            "i", 0
-        )  # For counting downloaded batches
+            "i", 0)  # For counting downloaded batches
         total_batches = (total_granules + page_size - 1) // page_size
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -409,9 +407,12 @@ def get_granule_ids_from_granules(granules):
     return granule_ids
 
 
-def get_burst_ids_and_sensing_times_from_query(
-    start, end, timestamp, endpoint, provider="ASF", shortname="OPERA_L2_RTC-S1_V1"
-):
+def get_burst_ids_and_sensing_times_from_query(start,
+                                               end,
+                                               timestamp,
+                                               endpoint,
+                                               provider="ASF",
+                                               shortname="OPERA_L2_RTC-S1_V1"):
     """Fetches burst IDs and their sensing times from the CMR API within a specified temporal range.
 
     :start: Start time in ISO 8601 format.
@@ -552,9 +553,8 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
                     if mgrs_tile_id:
                         # Add the MGRS Tile ID and associated InputGranules to the dictionary
                         if mgrs_tile_id in dswx_s1_mgrs_tiles_to_rtc_bursts:
-                            dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id].append(
-                                match.group(1)
-                            )
+                            dswx_s1_mgrs_tiles_to_rtc_bursts[
+                                mgrs_tile_id].append(match.group(1))
                         else:
                             dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id] = [
                                 match.group(1)
@@ -570,7 +570,8 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
             :param row:
 
             """
-            rtc_bursts_in_df_row = set(row["Covered RTC Native IDs"].split(", "))
+            rtc_bursts_in_df_row = set(
+                row["Covered RTC Native IDs"].split(", "))
             mgrs_tiles_in_df_row = set(row["MGRS Tiles"].split(", "))
 
             unique_available_rtc_bursts = {
@@ -596,11 +597,13 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
             return count
 
         # Apply the function and create a new column 'Unprocessed RTC Native IDs'
-        df["Unprocessed RTC Native IDs"] = df.apply(filter_and_find_missing, axis=1)
+        df["Unprocessed RTC Native IDs"] = df.apply(filter_and_find_missing,
+                                                    axis=1)
         df = df.dropna(subset=["Unprocessed RTC Native IDs"])
 
         # Using loc to safely modify the DataFrame without triggering SettingWithCopyWarning
-        df.loc[:, "Unprocessed RTC Native IDs Count"] = df.apply(count_missing, axis=1)
+        df.loc[:, "Unprocessed RTC Native IDs Count"] = df.apply(count_missing,
+                                                                 axis=1)
 
         return df
 
@@ -699,7 +702,8 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
             :param row:
 
             """
-            cslc_bursts_in_df_row = set(row["Covered CSLC Native IDs"].split(", "))
+            cslc_bursts_in_df_row = set(
+                row["Covered CSLC Native IDs"].split(", "))
 
             unprocessed_rtc_bursts = cslc_bursts_in_df_row - available_cslc_bursts
             if unprocessed_rtc_bursts:
@@ -717,11 +721,14 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
             return count
 
         # Apply the function and create a new column 'Unprocessed CSLC Native IDs'
-        df["Unprocessed CSLC Native IDs"] = df.apply(filter_and_find_missing, axis=1)
+        df["Unprocessed CSLC Native IDs"] = df.apply(filter_and_find_missing,
+                                                     axis=1)
         df = df.dropna(subset=["Unprocessed CSLC Native IDs"])
 
         # Using loc to safely modify the DataFrame without triggering SettingWithCopyWarning
-        df.loc[:, "Unprocessed CSLC Native IDs Count"] = df.apply(count_missing, axis=1)
+        df.loc[:,
+               "Unprocessed CSLC Native IDs Count"] = df.apply(count_missing,
+                                                               axis=1)
 
         return df
 
@@ -731,7 +738,8 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
     return False
 
 
-def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts_file):
+def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file,
+                              frames_to_bursts_file):
     """Maps CSLC burst IDs to their corresponding frame IDs and identifies matching bursts within those frames.
     The logic this function performs can be summarized as:
     1. Take list of burst_ids and identify all associated frame IDs
@@ -768,23 +776,22 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts
     data = []
     for frame_id in frame_ids:
         frame_id_str = str(frame_id)
-        associated_bursts = frames_to_bursts_data.get(frame_id_str, {}).get(
-            "burst_ids", []
-        )
+        associated_bursts = frames_to_bursts_data.get(frame_id_str,
+                                                      {}).get("burst_ids", [])
 
         # Find the intersection of associated bursts and the input burst_ids
-        matching_bursts = [burst for burst in burst_ids if burst in associated_bursts]
+        matching_bursts = [
+            burst for burst in burst_ids if burst in associated_bursts
+        ]
 
         # Append the result to the data list
-        data.append(
-            {
-                "Frame ID": frame_id,
-                "All Possible Bursts": associated_bursts,
-                "All Possible Bursts Count": len(associated_bursts),
-                "Matching Bursts": matching_bursts,
-                "Matching Bursts Count": len(matching_bursts),
-            }
-        )
+        data.append({
+            "Frame ID": frame_id,
+            "All Possible Bursts": associated_bursts,
+            "All Possible Bursts Count": len(associated_bursts),
+            "Matching Bursts": matching_bursts,
+            "Matching Bursts Count": len(matching_bursts),
+        })
 
     # Create a DataFrame from the data
     df = pd.DataFrame(data)
@@ -794,42 +801,44 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts
 if __name__ == "__main__":
     # Create an argument parser
     parser = argparse.ArgumentParser(
-        description="CMR Query with Temporal Range and SQLite DB Access"
-    )
+        description="CMR Query with Temporal Range and SQLite DB Access")
     parser.add_argument(
         "--timestamp",
         required=False,
         default="TEMPORAL",
         metavar="TEMPORAL|REVISION|PRODUCTION|CREATED",
-        help="Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision",
+        help=
+        "Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision",
     )
-    parser.add_argument(
-        "--start", required=False, help="Temporal start time (ISO 8601 format)"
-    )
-    parser.add_argument(
-        "--end", required=False, help="Temporal end time (ISO 8601 format)"
-    )
+    parser.add_argument("--start",
+                        required=False,
+                        help="Temporal start time (ISO 8601 format)")
+    parser.add_argument("--end",
+                        required=False,
+                        help="Temporal end time (ISO 8601 format)")
     parser.add_argument(
         "--dswx_s1_mgrs_db",
         required=False,
         help="Path to the MGRS Tile Set SQLite database file",
     )
-    parser.add_argument(
-        "--file", required=False, help="Optional file path containing granule IDs"
-    )
+    parser.add_argument("--file",
+                        required=False,
+                        help="Optional file path containing granule IDs")
     parser.add_argument(
         "--threshold",
         required=False,
-        help="Completion threshold minimum to filter results by (percentage format - leave out the % sign)",
+        help=
+        "Completion threshold minimum to filter results by (percentage format - leave out the % sign)",
     )
     parser.add_argument(
         "--matching_burst_count",
         required=False,
-        help="Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)",
+        help=
+        "Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)",
     )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Verbose and detailed output"
-    )
+    parser.add_argument("--verbose",
+                        action="store_true",
+                        help="Verbose and detailed output")
     parser.add_argument(
         "--endpoint_daac_input",
         required=False,
@@ -847,7 +856,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--validate",
         action="store_true",
-        help="Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)",
+        help=
+        "Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)",
     )
     parser.add_argument(
         "--product",
@@ -877,11 +887,11 @@ if __name__ == "__main__":
 
         # Check if file input is provided, otherwise use CMR API to get burst IDs
         if args.file:
-            burst_ids, burst_dates = get_burst_ids_from_file(filename=args.file)
+            burst_ids, burst_dates = get_burst_ids_from_file(
+                filename=args.file)
         else:
             burst_ids, burst_dates = get_burst_ids_and_sensing_times_from_query(
-                args.start, args.end, args.timestamp, args.endpoint_daac_input
-            )
+                args.start, args.end, args.timestamp, args.endpoint_daac_input)
 
         # Connect to the MGRS Tile Set SQLITE database
         conn = sqlite3.connect(args.dswx_s1_mgrs_db)
@@ -893,20 +903,18 @@ if __name__ == "__main__":
         mgrs_data = cursor.fetchall()
 
         # Initialize DataFrame to store results
-        df = pd.DataFrame(
-            columns=[
-                "MGRS Set ID",
-                "Coverage Percentage",
-                "Covered RTC Native IDs",
-                "Covered RTC Burst IDs",
-                "Total RTC Burst IDs",
-                "Covered RTC Burst ID Count",
-                "Total RTC Burst IDs Count",
-                "MGRS Tiles",
-                "MGRS Tiles Count",
-                "RTC Burst ID Dates",
-            ]
-        )
+        df = pd.DataFrame(columns=[
+            "MGRS Set ID",
+            "Coverage Percentage",
+            "Covered RTC Native IDs",
+            "Covered RTC Burst IDs",
+            "Total RTC Burst IDs",
+            "Covered RTC Burst ID Count",
+            "Total RTC Burst IDs Count",
+            "MGRS Tiles",
+            "MGRS Tiles Count",
+            "RTC Burst ID Dates",
+        ])
 
         # Initialize a list to store data for DataFrame
         data_for_df = []
@@ -914,22 +922,16 @@ if __name__ == "__main__":
         # Iterate through each mgrs_set_id and calculate coverage, also update a progress bar
         print()
         for mgrs_set_id, bursts_string, mgrs_tiles_string in tqdm.tqdm(
-            mgrs_data, desc="Calculating coverage"
-        ):
+                mgrs_data, desc="Calculating coverage"):
 
             # Main logic for coverage calculation:
             # 1. Identify RTC burst IDs we want to check (i.e. bursts_list)
             # 2. For each MGRS Set ID (i.e. mgrs_set_id), find the matching intersection (i.e. match_count) of RTC burst IDs (i.e. bursts_list) that map to the tile's burst IDs (i.e. burst_ids)
             # 3. Return the percentage of matches compared to the total number of bursts associated with the MGRS Tile Set ID (i.e. mgrs_set_id)
-            bursts_list = (
-                bursts_string.strip("[]").replace("'", "").replace(" ", "").split(",")
-            )
-            mgrs_tiles_list = (
-                mgrs_tiles_string.strip("[]")
-                .replace("'", "")
-                .replace(" ", "")
-                .split(",")
-            )
+            bursts_list = (bursts_string.strip("[]").replace("'", "").replace(
+                " ", "").split(","))
+            mgrs_tiles_list = (mgrs_tiles_string.strip("[]").replace(
+                "'", "").replace(" ", "").split(","))
             matching_burst_ids = {}
             matching_burst_dates = {}
 
@@ -939,34 +941,39 @@ if __name__ == "__main__":
                     matching_burst_dates[burst] = burst_dates[burst]
 
             match_burst_count = len(matching_burst_ids)
-            coverage_percentage = (
-                round((match_burst_count / len(bursts_list)) * 100, 2)
-                if bursts_list
-                else 0.0
-            )
+            coverage_percentage = (round(
+                (match_burst_count / len(bursts_list)) *
+                100, 2) if bursts_list else 0.0)
 
             # Collect the db data we will need later
-            data_for_df.append(
-                {
-                    "MGRS Set ID": mgrs_set_id,
-                    "Coverage Percentage": coverage_percentage,
-                    "Covered RTC Native IDs": ", ".join(
-                        list(matching_burst_ids.values())
-                    ),
-                    "Covered RTC Burst IDs": ", ".join(list(matching_burst_ids.keys())),
-                    "Total RTC Burst IDs": ", ".join(bursts_list),
-                    "Covered RTC Burst ID Count": len(matching_burst_ids),
-                    "Total RTC Burst IDs Count": len(bursts_list),
-                    "MGRS Tiles": ", ".join(mgrs_tiles_list),
-                    "MGRS Tiles Count": len(mgrs_tiles_list),
-                    "RTC Burst ID Dates": [
-                        pd.to_datetime(date, format="%Y%m%dT%H%M%SZ")
-                        for date in matching_burst_dates.values()
-                    ],
-                    "Unprocessed RTC Native IDs": "",
-                    "Unprocessed RTC Native IDs Count": 0,
-                }
-            )
+            data_for_df.append({
+                "MGRS Set ID":
+                mgrs_set_id,
+                "Coverage Percentage":
+                coverage_percentage,
+                "Covered RTC Native IDs":
+                ", ".join(list(matching_burst_ids.values())),
+                "Covered RTC Burst IDs":
+                ", ".join(list(matching_burst_ids.keys())),
+                "Total RTC Burst IDs":
+                ", ".join(bursts_list),
+                "Covered RTC Burst ID Count":
+                len(matching_burst_ids),
+                "Total RTC Burst IDs Count":
+                len(bursts_list),
+                "MGRS Tiles":
+                ", ".join(mgrs_tiles_list),
+                "MGRS Tiles Count":
+                len(mgrs_tiles_list),
+                "RTC Burst ID Dates": [
+                    pd.to_datetime(date, format="%Y%m%dT%H%M%SZ")
+                    for date in matching_burst_dates.values()
+                ],
+                "Unprocessed RTC Native IDs":
+                "",
+                "Unprocessed RTC Native IDs Count":
+                0,
+            })
 
         # Close the database connection safely
         conn.close()
@@ -995,9 +1002,8 @@ if __name__ == "__main__":
                 f"Expected DSWx-S1 product sensing time range: {smallest_date} to {greatest_date}"
             )
 
-            validated_df = validate_dswx_s1(
-                smallest_date, greatest_date, args.endpoint_daac_output, df
-            )
+            validated_df = validate_dswx_s1(smallest_date, greatest_date,
+                                            args.endpoint_daac_output, df)
 
             print()
             if len(validated_df) == 0:
@@ -1008,40 +1014,34 @@ if __name__ == "__main__":
                 if args.verbose:
                     print(
                         tabulate(
-                            df[
-                                [
-                                    "MGRS Set ID",
-                                    "Coverage Percentage",
-                                    "Total RTC Burst IDs Count",
-                                    "Covered RTC Burst ID Count",
-                                    "Unprocessed RTC Native IDs Count",
-                                    "Covered RTC Native IDs",
-                                    "Unprocessed RTC Native IDs",
-                                    "MGRS Tiles",
-                                ]
-                            ],
+                            df[[
+                                "MGRS Set ID",
+                                "Coverage Percentage",
+                                "Total RTC Burst IDs Count",
+                                "Covered RTC Burst ID Count",
+                                "Unprocessed RTC Native IDs Count",
+                                "Covered RTC Native IDs",
+                                "Unprocessed RTC Native IDs",
+                                "MGRS Tiles",
+                            ]],
                             headers="keys",
                             tablefmt="plain",
                             showindex=False,
-                        )
-                    )
+                        ))
                 else:
                     print(
                         tabulate(
-                            df[
-                                [
-                                    "MGRS Set ID",
-                                    "Coverage Percentage",
-                                    "Total RTC Burst IDs Count",
-                                    "Covered RTC Burst ID Count",
-                                    "Unprocessed RTC Native IDs Count",
-                                ]
-                            ],
+                            df[[
+                                "MGRS Set ID",
+                                "Coverage Percentage",
+                                "Total RTC Burst IDs Count",
+                                "Covered RTC Burst ID Count",
+                                "Unprocessed RTC Native IDs Count",
+                            ]],
                             headers="keys",
                             tablefmt="plain",
                             showindex=False,
-                        )
-                    )
+                        ))
             else:
                 print(
                     f"❌ Validation failed: Mismatch in DSWx-S1 products available at CMR for corresponding matched input RTC bursts within sensing time range."
@@ -1053,40 +1053,34 @@ if __name__ == "__main__":
                 if args.verbose:
                     print(
                         tabulate(
-                            validated_df[
-                                [
-                                    "MGRS Set ID",
-                                    "Coverage Percentage",
-                                    "Total RTC Burst IDs Count",
-                                    "Covered RTC Burst ID Count",
-                                    "Unprocessed RTC Native IDs Count",
-                                    "Covered RTC Native IDs",
-                                    "Unprocessed RTC Native IDs",
-                                    "MGRS Tiles",
-                                ]
-                            ],
+                            validated_df[[
+                                "MGRS Set ID",
+                                "Coverage Percentage",
+                                "Total RTC Burst IDs Count",
+                                "Covered RTC Burst ID Count",
+                                "Unprocessed RTC Native IDs Count",
+                                "Covered RTC Native IDs",
+                                "Unprocessed RTC Native IDs",
+                                "MGRS Tiles",
+                            ]],
                             headers="keys",
                             tablefmt="plain",
                             showindex=False,
-                        )
-                    )
+                        ))
                 else:
                     print(
                         tabulate(
-                            validated_df[
-                                [
-                                    "MGRS Set ID",
-                                    "Coverage Percentage",
-                                    "Total RTC Burst IDs Count",
-                                    "Covered RTC Burst ID Count",
-                                    "Unprocessed RTC Native IDs Count",
-                                ]
-                            ],
+                            validated_df[[
+                                "MGRS Set ID",
+                                "Coverage Percentage",
+                                "Total RTC Burst IDs Count",
+                                "Covered RTC Burst ID Count",
+                                "Unprocessed RTC Native IDs Count",
+                            ]],
                             headers="keys",
                             tablefmt="plain",
                             showindex=False,
-                        )
-                    )
+                        ))
         else:
             print(
                 f"Expected DSWx-S1 products: {df['MGRS Tiles Count'].sum()}, MGRS Set IDs covered: {len(df)}"
@@ -1094,43 +1088,34 @@ if __name__ == "__main__":
             if args.verbose:
                 print(
                     tabulate(
-                        df[
-                            [
-                                "MGRS Set ID",
-                                "Coverage Percentage",
-                                "Total RTC Burst IDs Count",
-                                "Covered RTC Burst ID Count",
-                                "Covered RTC Native IDs",
-                                "MGRS Tiles",
-                            ]
-                        ],
+                        df[[
+                            "MGRS Set ID",
+                            "Coverage Percentage",
+                            "Total RTC Burst IDs Count",
+                            "Covered RTC Burst ID Count",
+                            "Covered RTC Native IDs",
+                            "MGRS Tiles",
+                        ]],
                         headers="keys",
                         tablefmt="plain",
                         showindex=False,
-                    )
-                )
+                    ))
             else:
                 print(
                     tabulate(
-                        df[
-                            [
-                                "MGRS Set ID",
-                                "Coverage Percentage",
-                                "Total RTC Burst IDs Count",
-                                "Covered RTC Burst ID Count",
-                            ]
-                        ],
+                        df[[
+                            "MGRS Set ID",
+                            "Coverage Percentage",
+                            "Total RTC Burst IDs Count",
+                            "Covered RTC Burst ID Count",
+                        ]],
                         headers="keys",
                         tablefmt="plain",
                         showindex=False,
-                    )
-                )
+                    ))
 
-    elif (
-        args.product == "DISP-S1"
-        and args.disp_s1_burst_to_frame_db
-        and args.disp_s1_frame_to_burst_db
-    ):
+    elif (args.product == "DISP-S1" and args.disp_s1_burst_to_frame_db
+          and args.disp_s1_frame_to_burst_db):
         # Gather list of bursts and dates for CSLC sening time range
         burst_ids, burst_dates = get_burst_ids_and_sensing_times_from_query(
             start=args.start,
@@ -1157,23 +1142,19 @@ if __name__ == "__main__":
                     headers="keys",
                     tablefmt="plain",
                     showindex=False,
-                )
-            )
+                ))
         else:
             print(
                 tabulate(
-                    df[
-                        [
-                            "Frame ID",
-                            "All Possible Bursts Count",
-                            "Matching Bursts Count",
-                        ]
-                    ],
+                    df[[
+                        "Frame ID",
+                        "All Possible Bursts Count",
+                        "Matching Bursts Count",
+                    ]],
                     headers="keys",
                     tablefmt="plain",
                     showindex=False,
-                )
-            )
+                ))
 
     else:
         logging.error(
