@@ -18,13 +18,16 @@ import logging
 from datetime import datetime, timedelta
 
 # Constants
-CMR_GRANULES_API_ENDPOINT="https://cmr.earthdata.nasa.gov/search/granules.umm_json"
-CMR_UAT_GRANULES_API_ENDPOINT="https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json"
+CMR_GRANULES_API_ENDPOINT = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
+CMR_UAT_GRANULES_API_ENDPOINT = "https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json"
 BURST_AND_DATE_GRANULE_PATTERN = r'_T(\d+)-(\d+)-([A-Z]+\d+)_(\d+T\d+Z)_(\d+T\d+Z)'
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 # NOTE: This should be contributed to https://github.com/nasa/python_cmr to be included as part of the library
+
+
 def get_custom(url, params):
     """
     Get results for a specific page with a defined page size.
@@ -41,7 +44,7 @@ def get_custom(url, params):
 
     try:
         response = get(url, params=params)
-        logging.debug(response.url)        
+        logging.debug(response.url)
 
         response.raise_for_status()
     except Exception as e:
@@ -50,6 +53,7 @@ def get_custom(url, params):
 
     # Extract results based on JSON format
     return response.json()
+
 
 def fetch_with_backoff(url, params):
     """
@@ -75,7 +79,9 @@ def fetch_with_backoff(url, params):
             delay = min(max_delay, base_delay * 2 ** attempts)
             jitter = random.uniform(0, delay / 2)
             time.sleep(delay + jitter)
-            print(f"Retrying page {params.get('page_num')} after delay of {delay + jitter} seconds due to error: {e}")
+            print(
+                f"Retrying page {params.get('page_num')} after delay of {delay + jitter} seconds due to error: {e}")
+
 
 def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
     """
@@ -97,7 +103,8 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
     try:
         logging.debug(f"Fetching {url} with {params}")
         batch_granules = fetch_with_backoff(url, params)
-        logging.debug(f"Fetch success: {len(batch_granules)} batch granules downloaded.")
+        logging.debug(
+            f"Fetch success: {len(batch_granules)} batch granules downloaded.")
     except Exception as e:
         logging.error(f"Failed to fetch granules for page {page_num}: {e}")
         batch_granules = []
@@ -105,6 +112,7 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
         with downloaded_batches.get_lock():  # Safely increment the count
             downloaded_batches.value += 1
         return batch_granules
+
 
 def get_burst_id(granule_id):
     """
@@ -115,14 +123,15 @@ def get_burst_id(granule_id):
     """
     burst_id = ''
     if granule_id:
-      match = re.search(BURST_AND_DATE_GRANULE_PATTERN, granule_id)
-      if match:
-          t_number = match.group(1)
-          orbit_number = match.group(2)
-          iw_number = match.group(3).lower()
-          burst_id = f't{t_number}_{orbit_number}_{iw_number}'
+        match = re.search(BURST_AND_DATE_GRANULE_PATTERN, granule_id)
+        if match:
+            t_number = match.group(1)
+            orbit_number = match.group(2)
+            iw_number = match.group(3).lower()
+            burst_id = f't{t_number}_{orbit_number}_{iw_number}'
 
     return burst_id
+
 
 def get_burst_sensing_datetime(granule_id):
     """
@@ -133,11 +142,12 @@ def get_burst_sensing_datetime(granule_id):
     """
     burst_date = ''
     if granule_id:
-      match = re.search(BURST_AND_DATE_GRANULE_PATTERN, granule_id)
-      if match:
-          burst_date = match.group(4)
+        match = re.search(BURST_AND_DATE_GRANULE_PATTERN, granule_id)
+        if match:
+            burst_date = match.group(4)
 
     return burst_date
+
 
 def get_total_granules(url, params, retries=5, backoff_factor=1):
     """
@@ -157,10 +167,13 @@ def get_total_granules(url, params, retries=5, backoff_factor=1):
             return response['hits']
         except RuntimeError as e:
             if attempt < retries - 1:
-                sleep_time = backoff_factor * (2 ** attempt) + random.uniform(0, 1)
+                sleep_time = backoff_factor * \
+                    (2 ** attempt) + random.uniform(0, 1)
                 time.sleep(sleep_time)
             else:
-                raise RuntimeError("Failed to get total granules after several attempts.")
+                raise RuntimeError(
+                    "Failed to get total granules after several attempts.")
+
 
 def get_burst_ids_from_file(filename):
     """
@@ -188,11 +201,13 @@ def get_burst_ids_from_file(filename):
                 burst_ids[burst_id] = granule_id
                 burst_dates[burst_id] = burst_date
             else:
-                print(f"\nWarning: Could not extract burst information from malformed granule ID {granule_id}.")
+                print(
+                    f"\nWarning: Could not extract burst information from malformed granule ID {granule_id}.")
 
     return burst_ids, burst_dates
 
-def generate_url_params(start, end, endpoint = 'OPS', provider = 'ASF', short_name = 'OPERA_L2_RTC-S1_V1', window_length_days = 30, timestamp_type = 'temporal'):
+
+def generate_url_params(start, end, endpoint='OPS', provider='ASF', short_name='OPERA_L2_RTC-S1_V1', window_length_days=30, timestamp_type='temporal'):
     """
     Generates URL parameters for querying granules from CMR (Common Metadata Repository) based on provided criteria.
 
@@ -214,7 +229,8 @@ def generate_url_params(start, end, endpoint = 'OPS', provider = 'ASF', short_na
 
     # Ensure start and end times are provided
     if not start or not end:
-        raise ValueError("Start and end times are required if no file input is provided.")
+        raise ValueError(
+            "Start and end times are required if no file input is provided.")
 
     # Base URL for granule searches
     base_url = CMR_GRANULES_API_ENDPOINT
@@ -227,7 +243,9 @@ def generate_url_params(start, end, endpoint = 'OPS', provider = 'ASF', short_na
 
     # Set CMR param to ignore granule searches prior to a certain date
     start_datetime = datetime.fromisoformat(start.replace("Z", "+00:00"))
-    temporal_start_datetime = start_datetime - timedelta(days=window_length_days) # 30 days by default design - check with PCM team
+    # 30 days by default design - check with PCM team
+    temporal_start_datetime = start_datetime - \
+        timedelta(days=window_length_days)
     params['temporal'] = f"{temporal_start_datetime.isoformat()}"
 
     # Set time query type for CMR
@@ -235,14 +253,15 @@ def generate_url_params(start, end, endpoint = 'OPS', provider = 'ASF', short_na
         params['production_date'] = f"{start},{end}"
     elif timestamp_type.lower() == "revision":
         params['revision_date'] = f"{start},{end}"
-    elif timestamp_type.lower() == "created": 
+    elif timestamp_type.lower() == "created":
         params['created_at'] = f"{start},{end}"
-    else: # default time query type if not provided or set to temporal
+    else:  # default time query type if not provided or set to temporal
         params['temporal'] = f"{start},{end}"
 
     return base_url, params
 
-def get_granules_from_query(start, end, timestamp, endpoint, provider = 'ASF', shortname = 'OPERA_L2_RTC-S1_V1'):
+
+def get_granules_from_query(start, end, timestamp, endpoint, provider='ASF', shortname='OPERA_L2_RTC-S1_V1'):
     """
     Fetches granule metadata from the CMR API within a specified temporal range using parallel requests.
 
@@ -257,7 +276,8 @@ def get_granules_from_query(start, end, timestamp, endpoint, provider = 'ASF', s
 
     granules = []
 
-    base_url, params = generate_url_params(start=start, end=end, timestamp_type=timestamp, endpoint=endpoint, provider=provider, short_name=shortname)
+    base_url, params = generate_url_params(
+        start=start, end=end, timestamp_type=timestamp, endpoint=endpoint, provider=provider, short_name=shortname)
 
     # Construct the URL for the total granules query
     total_granules = get_total_granules(base_url, params)
@@ -278,7 +298,8 @@ def get_granules_from_query(start, end, timestamp, endpoint, provider = 'ASF', s
 
     # Main loop to fetch granules, update progress bar, and extract burst_ids
     with tqdm.tqdm(total=total_granules, desc="Fetching granules", position=0) as pbar_global:
-        downloaded_batches = multiprocessing.Value('i', 0)  # For counting downloaded batches
+        downloaded_batches = multiprocessing.Value(
+            'i', 0)  # For counting downloaded batches
         total_batches = (total_granules + page_size - 1) // page_size
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -287,10 +308,12 @@ def get_granules_from_query(start, end, timestamp, endpoint, provider = 'ASF', s
             # futures = [executor.submit(parallel_fetch, base_url, params, page_num, page_size, downloaded_batches, total_batches) for page_num in range(1, total_batches + 1)]
             futures = []
             for page_num in range(1, total_batches + 1):
-                future = executor.submit(parallel_fetch, base_url, params, page_num, page_size, downloaded_batches)
+                future = executor.submit(
+                    parallel_fetch, base_url, params, page_num, page_size, downloaded_batches)
                 futures.append(future)
                 random_delay = random.uniform(0, 0.1)
-                time.sleep(random_delay) # Stagger the submission of function calls for CMR optimization
+                # Stagger the submission of function calls for CMR optimization
+                time.sleep(random_delay)
                 logging.debug(f"Scheduled granule fetch for batch {page_num}")
 
             for future in concurrent.futures.as_completed(futures):
@@ -304,10 +327,12 @@ def get_granules_from_query(start, end, timestamp, endpoint, provider = 'ASF', s
     # Integrity check for total granules
     total_downloaded = sum(len(future.result()) for future in futures)
     if total_downloaded != total_granules:
-        print(f"\nError: Expected {total_granules} granules, but downloaded {total_downloaded}. Try running again after some delay.")
+        print(
+            f"\nError: Expected {total_granules} granules, but downloaded {total_downloaded}. Try running again after some delay.")
         sys.exit(1)
-    
+
     return granules
+
 
 def get_granule_ids_from_granules(granules):
     """
@@ -325,7 +350,8 @@ def get_granule_ids_from_granules(granules):
 
     return granule_ids
 
-def get_burst_ids_and_sensing_times_from_query(start, end, timestamp, endpoint, provider = 'ASF', shortname = 'OPERA_L2_RTC-S1_V1'):
+
+def get_burst_ids_and_sensing_times_from_query(start, end, timestamp, endpoint, provider='ASF', shortname='OPERA_L2_RTC-S1_V1'):
     """
     Fetches burst IDs and their sensing times from the CMR API within a specified temporal range.
 
@@ -338,7 +364,8 @@ def get_burst_ids_and_sensing_times_from_query(start, end, timestamp, endpoint, 
     :return: Two dictionaries - one mapping burst IDs to granule IDs, and another mapping burst IDs to sensing times.
     """
 
-    granules = get_granules_from_query(start=start, end=end, timestamp=timestamp, endpoint=endpoint, provider=provider, shortname=shortname)
+    granules = get_granules_from_query(
+        start=start, end=end, timestamp=timestamp, endpoint=endpoint, provider=provider, shortname=shortname)
     if (granules):
         granule_ids = get_granule_ids_from_granules(granules)
     else:
@@ -356,9 +383,11 @@ def get_burst_ids_and_sensing_times_from_query(start, end, timestamp, endpoint, 
             burst_ids[burst_id] = granule_id
             burst_dates[burst_id] = burst_date
         else:
-            print(f"\nWarning: Could not extract burst ID from malformed granule ID {granule_id}.")
-    
+            print(
+                f"\nWarning: Could not extract burst ID from malformed granule ID {granule_id}.")
+
     return burst_ids, burst_dates
+
 
 def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
     """
@@ -379,11 +408,11 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
         CMR environment ('UAT' or 'OPS') to specify the operational setting for the data query.
     :param df: pandas.DataFrame
         A DataFrame containing columns with granule identifiers which will be checked against the CMR query results.
-        
+
     :return: pandas.DataFrame or bool
         A modified DataFrame with additional columns 'Unprocessed RTC Native IDs' and 'Unprocessed RTC Native IDs Count' showing
         granules not found in the CMR results and their count respectively. Returns False if the CMR query fails.
-    
+
     Raises:
         requests.exceptions.RequestException if the CMR query fails, which is logged as an error.
     """
@@ -450,16 +479,19 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
                     if mgrs_tile_id:
                         # Add the MGRS Tile ID and associated InputGranules to the dictionary
                         if mgrs_tile_id in dswx_s1_mgrs_tiles_to_rtc_bursts:
-                            dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id].append(match.group(1))
+                            dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id].append(
+                                match.group(1))
                         else:
-                            dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id] = [match.group(1)]
+                            dswx_s1_mgrs_tiles_to_rtc_bursts[mgrs_tile_id] = [
+                                match.group(1)]
                     available_rtc_bursts.append(match.group(1))
 
-        #unique_available_rtc_bursts = set(available_rtc_bursts)
+        # unique_available_rtc_bursts = set(available_rtc_bursts)
 
         # Function to identify missing bursts
         def filter_and_find_missing(row):
-            rtc_bursts_in_df_row = set(row['Covered RTC Native IDs'].split(', '))
+            rtc_bursts_in_df_row = set(
+                row['Covered RTC Native IDs'].split(', '))
             mgrs_tiles_in_df_row = set(row['MGRS Tiles'].split(', '))
 
             unique_available_rtc_bursts = {
@@ -472,7 +504,7 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
             unprocessed_rtc_bursts = rtc_bursts_in_df_row - unique_available_rtc_bursts
             if unprocessed_rtc_bursts:
                 return ', '.join(unprocessed_rtc_bursts)
-            return None  # or pd.NA 
+            return None  # or pd.NA
 
         # Function to count missing bursts
         def count_missing(row):
@@ -480,18 +512,21 @@ def validate_dswx_s1(smallest_date, greatest_date, endpoint, df):
             return count
 
         # Apply the function and create a new column 'Unprocessed RTC Native IDs'
-        df['Unprocessed RTC Native IDs'] = df.apply(filter_and_find_missing, axis=1)
+        df['Unprocessed RTC Native IDs'] = df.apply(
+            filter_and_find_missing, axis=1)
         df = df.dropna(subset=['Unprocessed RTC Native IDs'])
 
         # Using loc to safely modify the DataFrame without triggering SettingWithCopyWarning
-        df.loc[:, 'Unprocessed RTC Native IDs Count'] = df.apply(count_missing, axis=1)
+        df.loc[:, 'Unprocessed RTC Native IDs Count'] = df.apply(
+            count_missing, axis=1)
 
         return df
 
     except requests.exceptions.RequestException as e:
         logging.error(f"Failed to fetch data from CMR: {e}")
-        
+
     return False
+
 
 def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
     """
@@ -512,11 +547,11 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
         CMR environment ('UAT' or 'OPS') to specify the operational setting for the data query.
     :param df: pandas.DataFrame
         A DataFrame containing columns with granule identifiers which will be checked against the CMR query results.
-        
+
     :return: pandas.DataFrame or bool
         A modified DataFrame with additional columns 'Unprocessed RTC Native IDs' and 'Unprocessed RTC Native IDs Count' showing
         granules not found in the CMR results and their count respectively. Returns False if the CMR query fails.
-    
+
     Raises:
         requests.exceptions.RequestException if the CMR query fails, which is logged as an error.
     """
@@ -578,12 +613,13 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
 
         # Function to identify missing bursts
         def filter_and_find_missing(row):
-            cslc_bursts_in_df_row = set(row['Covered CSLC Native IDs'].split(', '))
+            cslc_bursts_in_df_row = set(
+                row['Covered CSLC Native IDs'].split(', '))
 
             unprocessed_rtc_bursts = cslc_bursts_in_df_row - available_cslc_bursts
             if unprocessed_rtc_bursts:
                 return ', '.join(unprocessed_rtc_bursts)
-            return None  # or pd.NA 
+            return None  # or pd.NA
 
         # Function to count missing bursts
         def count_missing(row):
@@ -591,18 +627,21 @@ def validate_disp_s1(smallest_date, greatest_date, endpoint, df):
             return count
 
         # Apply the function and create a new column 'Unprocessed CSLC Native IDs'
-        df['Unprocessed CSLC Native IDs'] = df.apply(filter_and_find_missing, axis=1)
+        df['Unprocessed CSLC Native IDs'] = df.apply(
+            filter_and_find_missing, axis=1)
         df = df.dropna(subset=['Unprocessed CSLC Native IDs'])
 
         # Using loc to safely modify the DataFrame without triggering SettingWithCopyWarning
-        df.loc[:, 'Unprocessed CSLC Native IDs Count'] = df.apply(count_missing, axis=1)
+        df.loc[:, 'Unprocessed CSLC Native IDs Count'] = df.apply(
+            count_missing, axis=1)
 
         return df
 
     except requests.exceptions.RequestException as e:
         logging.error(f"Failed to fetch data from CMR: {e}")
-        
+
     return False
+
 
 def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts_file):
     """
@@ -622,26 +661,28 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts
     # Load bursts to frames data
     with open(bursts_to_frames_file, 'r') as f:
         bursts_to_frames_data = json.load(f)["data"]
-    
+
     # Load frames to bursts data
     with open(frames_to_bursts_file, 'r') as f:
         frames_to_bursts_data = json.load(f)["data"]
-    
+
     # Step 1: Map the burst IDs to their corresponding frame IDs
     frame_ids = set()
     for burst_id in burst_ids:
         frames = bursts_to_frames_data.get(burst_id, {}).get("frame_ids", [])
         frame_ids.update(frames)
-    
+
     # Step 2: For each frame ID, get all associated burst IDs from the frames_to_bursts mapping
     data = []
     for frame_id in frame_ids:
         frame_id_str = str(frame_id)
-        associated_bursts = frames_to_bursts_data.get(frame_id_str, {}).get("burst_ids", [])
-        
+        associated_bursts = frames_to_bursts_data.get(
+            frame_id_str, {}).get("burst_ids", [])
+
         # Find the intersection of associated bursts and the input burst_ids
-        matching_bursts = [burst for burst in burst_ids if burst in associated_bursts]
-        
+        matching_bursts = [
+            burst for burst in burst_ids if burst in associated_bursts]
+
         # Append the result to the data list
         data.append({
             "Frame ID": frame_id,
@@ -650,28 +691,44 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file, frames_to_bursts
             "Matching Bursts": matching_bursts,
             'Matching Bursts Count': len(matching_bursts)
         })
-    
+
     # Create a DataFrame from the data
     df = pd.DataFrame(data)
     return df
 
+
 if __name__ == '__main__':
     # Create an argument parser
-    parser = argparse.ArgumentParser(description="CMR Query with Temporal Range and SQLite DB Access")
-    parser.add_argument("--timestamp", required=False, default='TEMPORAL', metavar="TEMPORAL|REVISION|PRODUCTION|CREATED",  help="Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision")
-    parser.add_argument("--start", required=False, help="Temporal start time (ISO 8601 format)")
-    parser.add_argument("--end", required=False, help="Temporal end time (ISO 8601 format)")
-    parser.add_argument("--dswx_s1_mgrs_db", required=False, help="Path to the MGRS Tile Set SQLite database file")
-    parser.add_argument("--file", required=False, help="Optional file path containing granule IDs")
-    parser.add_argument("--threshold", required=False, help="Completion threshold minimum to filter results by (percentage format - leave out the % sign)")
-    parser.add_argument("--matching_burst_count", required=False, help="Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)")
-    parser.add_argument("--verbose", action='store_true', help="Verbose and detailed output")
-    parser.add_argument("--endpoint_daac_input", required=False, choices=['UAT', 'OPS'], default='OPS', help='CMR endpoint venue for RTC granules')
-    parser.add_argument("--endpoint_daac_output", required=False, choices=['UAT', 'OPS'], default='OPS', help='CMR endpoint venue for DSWx-S1 granules')
-    parser.add_argument("--validate", action='store_true', help="Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)")
-    parser.add_argument("--product", required=True, choices=['DSWx-S1', 'DISP-S1'], default='DSWx-S1', help="The product to validate")
-    parser.add_argument("--disp_s1_burst_to_frame_db", required=False, help="Path to burst-to-frame JSON database file (for DISP-S1 only)")
-    parser.add_argument("--disp_s1_frame_to_burst_db", required=False, help="Path to frame-to-burst JSON database file (for DISP-S1 only)")
+    parser = argparse.ArgumentParser(
+        description="CMR Query with Temporal Range and SQLite DB Access")
+    parser.add_argument("--timestamp", required=False, default='TEMPORAL', metavar="TEMPORAL|REVISION|PRODUCTION|CREATED",
+                        help="Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision")
+    parser.add_argument("--start", required=False,
+                        help="Temporal start time (ISO 8601 format)")
+    parser.add_argument("--end", required=False,
+                        help="Temporal end time (ISO 8601 format)")
+    parser.add_argument("--dswx_s1_mgrs_db", required=False,
+                        help="Path to the MGRS Tile Set SQLite database file")
+    parser.add_argument("--file", required=False,
+                        help="Optional file path containing granule IDs")
+    parser.add_argument("--threshold", required=False,
+                        help="Completion threshold minimum to filter results by (percentage format - leave out the % sign)")
+    parser.add_argument("--matching_burst_count", required=False,
+                        help="Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)")
+    parser.add_argument("--verbose", action='store_true',
+                        help="Verbose and detailed output")
+    parser.add_argument("--endpoint_daac_input", required=False, choices=[
+                        'UAT', 'OPS'], default='OPS', help='CMR endpoint venue for RTC granules')
+    parser.add_argument("--endpoint_daac_output", required=False, choices=[
+                        'UAT', 'OPS'], default='OPS', help='CMR endpoint venue for DSWx-S1 granules')
+    parser.add_argument("--validate", action='store_true',
+                        help="Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)")
+    parser.add_argument("--product", required=True, choices=[
+                        'DSWx-S1', 'DISP-S1'], default='DSWx-S1', help="The product to validate")
+    parser.add_argument("--disp_s1_burst_to_frame_db", required=False,
+                        help="Path to burst-to-frame JSON database file (for DISP-S1 only)")
+    parser.add_argument("--disp_s1_frame_to_burst_db", required=False,
+                        help="Path to frame-to-burst JSON database file (for DISP-S1 only)")
 
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -683,9 +740,11 @@ if __name__ == '__main__':
 
         # Check if file input is provided, otherwise use CMR API to get burst IDs
         if args.file:
-            burst_ids, burst_dates = get_burst_ids_from_file(filename=args.file)
+            burst_ids, burst_dates = get_burst_ids_from_file(
+                filename=args.file)
         else:
-            burst_ids, burst_dates = get_burst_ids_and_sensing_times_from_query(args.start, args.end, args.timestamp, args.endpoint_daac_input)
+            burst_ids, burst_dates = get_burst_ids_and_sensing_times_from_query(
+                args.start, args.end, args.timestamp, args.endpoint_daac_input)
 
         # Connect to the MGRS Tile Set SQLITE database
         conn = sqlite3.connect(args.dswx_s1_mgrs_db)
@@ -697,7 +756,8 @@ if __name__ == '__main__':
         mgrs_data = cursor.fetchall()
 
         # Initialize DataFrame to store results
-        df = pd.DataFrame(columns=['MGRS Set ID', 'Coverage Percentage', 'Covered RTC Native IDs', 'Covered RTC Burst IDs', 'Total RTC Burst IDs', 'Covered RTC Burst ID Count', 'Total RTC Burst IDs Count', 'MGRS Tiles', 'MGRS Tiles Count', 'RTC Burst ID Dates'])
+        df = pd.DataFrame(columns=['MGRS Set ID', 'Coverage Percentage', 'Covered RTC Native IDs', 'Covered RTC Burst IDs', 'Total RTC Burst IDs',
+                          'Covered RTC Burst ID Count', 'Total RTC Burst IDs Count', 'MGRS Tiles', 'MGRS Tiles Count', 'RTC Burst ID Dates'])
 
         # Initialize a list to store data for DataFrame
         data_for_df = []
@@ -710,10 +770,12 @@ if __name__ == '__main__':
             # 1. Identify RTC burst IDs we want to check (i.e. bursts_list)
             # 2. For each MGRS Set ID (i.e. mgrs_set_id), find the matching intersection (i.e. match_count) of RTC burst IDs (i.e. bursts_list) that map to the tile's burst IDs (i.e. burst_ids)
             # 3. Return the percentage of matches compared to the total number of bursts associated with the MGRS Tile Set ID (i.e. mgrs_set_id)
-            bursts_list = bursts_string.strip("[]").replace("'", "").replace(" ", "").split(',')
-            mgrs_tiles_list = mgrs_tiles_string.strip("[]").replace("'", "").replace(" ", "").split(',')
+            bursts_list = bursts_string.strip("[]").replace(
+                "'", "").replace(" ", "").split(',')
+            mgrs_tiles_list = mgrs_tiles_string.strip(
+                "[]").replace("'", "").replace(" ", "").split(',')
             matching_burst_ids = {}
-            matching_burst_dates = {} 
+            matching_burst_dates = {}
 
             for burst in burst_ids:
                 if burst in bursts_list:
@@ -721,7 +783,8 @@ if __name__ == '__main__':
                     matching_burst_dates[burst] = burst_dates[burst]
 
             match_burst_count = len(matching_burst_ids)
-            coverage_percentage = round((match_burst_count / len(bursts_list)) * 100, 2) if bursts_list else 0.0
+            coverage_percentage = round(
+                (match_burst_count / len(bursts_list)) * 100, 2) if bursts_list else 0.0
 
             # Collect the db data we will need later
             data_for_df.append({
@@ -762,49 +825,64 @@ if __name__ == '__main__':
             greatest_date = burst_dates_series.max()
 
             print()
-            print(f"Expected DSWx-S1 product sensing time range: {smallest_date} to {greatest_date}")
+            print(
+                f"Expected DSWx-S1 product sensing time range: {smallest_date} to {greatest_date}")
 
-            validated_df = validate_dswx_s1(smallest_date, greatest_date, args.endpoint_daac_output, df)
+            validated_df = validate_dswx_s1(
+                smallest_date, greatest_date, args.endpoint_daac_output, df)
 
             print()
             if len(validated_df) == 0:
-                print(f"✅ Validation successful: All DSWx-S1 products ({df['MGRS Tiles Count'].sum()}) available at CMR for corresponding matched input RTC bursts within sensing time range.")
+                print(
+                    f"✅ Validation successful: All DSWx-S1 products ({df['MGRS Tiles Count'].sum()}) available at CMR for corresponding matched input RTC bursts within sensing time range.")
                 print()
                 if (args.verbose):
-                    print(tabulate(df[['MGRS Set ID','Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count', 'Covered RTC Native IDs', 'Unprocessed RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
+                    print(tabulate(df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count',
+                          'Covered RTC Native IDs', 'Unprocessed RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
                 else:
-                    print(tabulate(df[['MGRS Set ID','Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count']], headers='keys', tablefmt='plain', showindex=False))
+                    print(tabulate(df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count',
+                          'Unprocessed RTC Native IDs Count']], headers='keys', tablefmt='plain', showindex=False))
             else:
                 print(f"❌ Validation failed: Mismatch in DSWx-S1 products available at CMR for corresponding matched input RTC bursts within sensing time range.")
                 print()
-                print(f"Incomplete MGRS Set IDs ({len(validated_df)}) out of total MGRS Set IDs expected ({len(df)}) and expected DSWx-S1 products ({df['MGRS Tiles Count'].sum()})")
+                print(
+                    f"Incomplete MGRS Set IDs ({len(validated_df)}) out of total MGRS Set IDs expected ({len(df)}) and expected DSWx-S1 products ({df['MGRS Tiles Count'].sum()})")
                 if (args.verbose):
-                    print(tabulate(validated_df[['MGRS Set ID','Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count', 'Covered RTC Native IDs', 'Unprocessed RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
+                    print(tabulate(validated_df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count',
+                          'Unprocessed RTC Native IDs Count', 'Covered RTC Native IDs', 'Unprocessed RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
                 else:
-                    print(tabulate(validated_df[['MGRS Set ID','Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count']], headers='keys', tablefmt='plain', showindex=False))
+                    print(tabulate(validated_df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count',
+                          'Covered RTC Burst ID Count', 'Unprocessed RTC Native IDs Count']], headers='keys', tablefmt='plain', showindex=False))
         else:
-            print(f"Expected DSWx-S1 products: {df['MGRS Tiles Count'].sum()}, MGRS Set IDs covered: {len(df)}")
+            print(
+                f"Expected DSWx-S1 products: {df['MGRS Tiles Count'].sum()}, MGRS Set IDs covered: {len(df)}")
             if (args.verbose):
-                print(tabulate(df[['MGRS Set ID','Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count', 'Covered RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
+                print(tabulate(df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count',
+                      'Covered RTC Native IDs', 'MGRS Tiles']], headers='keys', tablefmt='plain', showindex=False))
             else:
-                print(tabulate(df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count', 'Covered RTC Burst ID Count']], headers='keys', tablefmt='plain', showindex=False))
+                print(tabulate(df[['MGRS Set ID', 'Coverage Percentage', 'Total RTC Burst IDs Count',
+                      'Covered RTC Burst ID Count']], headers='keys', tablefmt='plain', showindex=False))
 
     elif (args.product == 'DISP-S1' and args.disp_s1_burst_to_frame_db and args.disp_s1_frame_to_burst_db):
         # Gather list of bursts and dates for CSLC sening time range
-        burst_ids, burst_dates  = get_burst_ids_and_sensing_times_from_query(start=args.start, end=args.end, endpoint='OPS',  timestamp=args.timestamp, shortname='OPERA_L2_CSLC-S1_V1')
-        
+        burst_ids, burst_dates = get_burst_ids_and_sensing_times_from_query(
+            start=args.start, end=args.end, endpoint='OPS',  timestamp=args.timestamp, shortname='OPERA_L2_CSLC-S1_V1')
+
         # Generate a table that has frames, all bursts, and matching bursts listed
         df = map_cslc_bursts_to_frames(burst_ids=burst_ids.keys(),
-                                      bursts_to_frames_file=args.disp_s1_burst_to_frame_db,
-                                      frames_to_bursts_file=args.disp_s1_frame_to_burst_db)
+                                       bursts_to_frames_file=args.disp_s1_burst_to_frame_db,
+                                       frames_to_bursts_file=args.disp_s1_frame_to_burst_db)
 
         # Filter to only those frames that have full coverage (i.e. all bursts == matching)
         df = df[df['All Possible Bursts Count'] == df['Matching Bursts Count']]
 
         if (args.verbose):
-            print(tabulate(df[['Frame ID','All Possible Bursts', 'Matching Bursts']], headers='keys', tablefmt='plain', showindex=False))
+            print(tabulate(df[['Frame ID', 'All Possible Bursts', 'Matching Bursts']],
+                  headers='keys', tablefmt='plain', showindex=False))
         else:
-            print(tabulate(df[['Frame ID','All Possible Bursts Count', 'Matching Bursts Count']], headers='keys', tablefmt='plain', showindex=False))
+            print(tabulate(df[['Frame ID', 'All Possible Bursts Count', 'Matching Bursts Count']],
+                  headers='keys', tablefmt='plain', showindex=False))
 
     else:
-        logging.error(f"Arguments for for --product '{args.product}' missing or not invalid.")
+        logging.error(
+            f"Arguments for for --product '{args.product}' missing or not invalid.")
