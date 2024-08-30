@@ -15,34 +15,22 @@ from opera_validator import validate_dswx_s1
 
 def test_get_burst_id():
     """ """
-    assert (
-        get_burst_id(
-            "OPERA_L2_RTC-S1_T020-041121-IW1_20231101T013115Z_20231104T041913Z_S1A_30_v1.0"
-        )
-        == "t020_041121_iw1"
-    )
-    assert (
-        get_burst_id(
-            "OPERA_L2_CSLC-S1_T150-320187-IW3_20240718T232012Z_20240719T192611Z_S1A_VV_v1.1"
-        )
-        == "t150_320187_iw3"
-    )
+    assert (get_burst_id(
+        "OPERA_L2_RTC-S1_T020-041121-IW1_20231101T013115Z_20231104T041913Z_S1A_30_v1.0"
+    ) == "t020_041121_iw1")
+    assert (get_burst_id(
+        "OPERA_L2_CSLC-S1_T150-320187-IW3_20240718T232012Z_20240719T192611Z_S1A_VV_v1.1"
+    ) == "t150_320187_iw3")
 
 
 def test_get_burst_sensing_datetime():
     """ """
-    assert (
-        get_burst_sensing_datetime(
-            "OPERA_L2_RTC-S1_T020-041121-IW1_20231101T013115Z_20231104T041913Z_S1A_30_v1.0"
-        )
-        == "20231101T013115Z"
-    )
-    assert (
-        get_burst_sensing_datetime(
-            "OPERA_L2_CSLC-S1_T150-320187-IW3_20240718T232012Z_20240719T192611Z_S1A_VV_v1.1"
-        )
-        == "20240718T232012Z"
-    )
+    assert (get_burst_sensing_datetime(
+        "OPERA_L2_RTC-S1_T020-041121-IW1_20231101T013115Z_20231104T041913Z_S1A_30_v1.0"
+    ) == "20231101T013115Z")
+    assert (get_burst_sensing_datetime(
+        "OPERA_L2_CSLC-S1_T150-320187-IW3_20240718T232012Z_20240719T192611Z_S1A_VV_v1.1"
+    ) == "20240718T232012Z")
 
 
 def test_generate_url_params():
@@ -55,9 +43,8 @@ def test_generate_url_params():
     short_name = "OPERA_L2_RTC-S1_V1"
     timestamp_type = "temporal"
 
-    base_url, params = generate_url_params(
-        start, end, endpoint, provider, short_name, 30, timestamp_type
-    )
+    base_url, params = generate_url_params(start, end, endpoint, provider,
+                                           short_name, 30, timestamp_type)
 
     assert base_url == "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
     assert params["provider"] == provider
@@ -67,9 +54,8 @@ def test_generate_url_params():
     # Test case 2: Revision
     timestamp_type = "revision"
 
-    base_url, params = generate_url_params(
-        start, end, endpoint, provider, short_name, 30, timestamp_type
-    )
+    base_url, params = generate_url_params(start, end, endpoint, provider,
+                                           short_name, 30, timestamp_type)
 
     assert base_url == "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
     assert params["provider"] == provider
@@ -81,9 +67,8 @@ def test_generate_url_params():
     # Test case 3: UAT Endpoint
     endpoint = "UAT"
 
-    base_url, params = generate_url_params(
-        start, end, endpoint, provider, short_name, 30, timestamp_type
-    )
+    base_url, params = generate_url_params(start, end, endpoint, provider,
+                                           short_name, 30, timestamp_type)
 
     assert base_url == "https://cmr.uat.earthdata.nasa.gov/search/granules.umm_json"
     assert params["provider"] == provider
@@ -146,9 +131,8 @@ def test_map_cslc_bursts_to_frames(mocker):
     burst_ids = ["t001_000001_iw1", "t001_000001_iw2", "t001_000003_iw1"]
 
     # Call the function with the mocked data
-    df = map_cslc_bursts_to_frames(
-        burst_ids, "dummy_bursts_to_frames.json", "dummy_frames_to_bursts.json"
-    )
+    df = map_cslc_bursts_to_frames(burst_ids, "dummy_bursts_to_frames.json",
+                                   "dummy_frames_to_bursts.json")
 
     # Assert that the DataFrame has the correct shape
     assert df.shape == (2, 5)
@@ -165,7 +149,9 @@ def test_map_cslc_bursts_to_frames(mocker):
     }
 
     # Assert that the Matching Bursts column contains the correct matching bursts for frame 1
-    assert set(df.loc[0, "Matching Bursts"]) == {"t001_000001_iw1", "t001_000001_iw2"}
+    assert set(
+        df.loc[0,
+               "Matching Bursts"]) == {"t001_000001_iw1", "t001_000001_iw2"}
 
     # Assert that the Frame ID for the second row is 2
     assert df.loc[1, "Frame ID"] == 2
