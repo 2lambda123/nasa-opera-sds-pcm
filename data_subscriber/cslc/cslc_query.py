@@ -397,23 +397,27 @@ since the first CSLC file for the batch was ingested which is greater than the g
                 all_granules = self.query_cmr_by_native_id(args, token, cmr, settings, now, args.native_id)
 
             # Reprocessing by date range is a two-step process:
-            # 1) Query CMR for all CSLC files in the date range specified and create list of granules with unique frame_ids
+            # 1) Query CMR for all CSLC files in the date range specified and create list of granules with unique frame_ids per acq day index
             # 2) Process each granule as if they were passed in as native_id
             elif args.start_date is not None and args.end_date is not None:
                 all_granules = []
+                frame_id_map = defaultdict(str)
 
                 # First get all CSLC files in the range specified
+                # If the frame id is specified, we know what it should be
                 if self.args.frame_id is not None:
                     granules = self.query_cmr_by_frame_and_dates(args, token, cmr, settings, now, timerange)
+                    for granule in granules:
+                        frame_id_map[self.args.frame_id] = granule["granule_id"]
+
+                # If just the date range was specified, we could have up to two frame ids per burst
                 else:
                     granules = asyncio.run(async_query_cmr(args, token, cmr, settings, timerange, now))
+                    for granule in granules:
+                        _, _, _, frame_ids = parse_cslc_native_id(granule["granule_id"], self.burst_to_frames, self.disp_burst_map_hist)
+                        for frame_id in frame_ids:
+                            frame_id_map[frame_id] = granule["granule_id"]
 
-                # Then create a unique set of frame_ids that we need to query for
-                frame_id_map = defaultdict(str)
-                for granule in granules:
-                    _, _, _, frame_ids = parse_cslc_native_id(granule["granule_id"], self.burst_to_frames, self.disp_burst_map_hist)
-                    for frame_id in frame_ids:
-                        frame_id_map[frame_id] = granule["granule_id"]
                 for frame_id, native_id in frame_id_map.items():
                     new_granules = self.query_cmr_by_native_id(args, token, cmr, settings, now, native_id)
                     all_granules.extend(new_granules)
