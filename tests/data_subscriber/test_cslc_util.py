@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-import pytest
+from datetime import datetime
+
 import conftest
+import dateutil
+import pytest
 
 from data_subscriber import cslc_utils
+from data_subscriber.cmr import DateTimeRange, get_cmr_token
 from data_subscriber.cslc_utils import CSLCDependency
 from data_subscriber.parser import create_parser
-import dateutil
-from datetime import datetime
-from data_subscriber.cmr import DateTimeRange, get_cmr_token
 from util.conf_util import SettingsConf
 
 hist_arguments = [
