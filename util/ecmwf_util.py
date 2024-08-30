@@ -30,9 +30,8 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     try:
         parsed_uri = urlparse(ecmwf_s3_uri)
     except ValueError as err:
-        logger.error(
-            "Failed to parse ECMWF S3 URI %s, reason: %s", ecmwf_s3_uri, str(err)
-        )
+        logger.error("Failed to parse ECMWF S3 URI %s, reason: %s",
+                     ecmwf_s3_uri, str(err))
         raise
 
     bucket = parsed_uri.netloc
@@ -47,7 +46,8 @@ def check_s3_for_ecmwf(ecmwf_s3_uri: str):
     except botocore.exceptions.ClientError as e:
         if e.response["Error"]["Code"] == "404":
             # File does not exist
-            logger.warning("ECMWF file %s does not exist in bucket %s", key, bucket)
+            logger.warning("ECMWF file %s does not exist in bucket %s", key,
+                           bucket)
             return False
         else:
             # Some kind of unexpected error
@@ -83,12 +83,14 @@ def ecmwf_key_for_datetime(dt: datetime):
 
     key_template = "{prefix}/D{month}{day}{hour}00{month}{day}{hour}001.subset.zz.nc"
 
-    return key_template.format(
-        prefix=prefix, month=dt.strftime("%m"), day=dt.strftime("%d"), hour=hour
-    )
+    return key_template.format(prefix=prefix,
+                               month=dt.strftime("%m"),
+                               day=dt.strftime("%d"),
+                               hour=hour)
 
 
-def find_ecmwf_for_datetime(dt: datetime, s3_prefix="s3://opera-ancillaries/ecmwf"):
+def find_ecmwf_for_datetime(dt: datetime,
+                            s3_prefix="s3://opera-ancillaries/ecmwf"):
     """Returns the S3 path to an ECMWF file corresponding to the provided datetime,
     if it exists.
 
