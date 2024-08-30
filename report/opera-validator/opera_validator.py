@@ -8,7 +8,8 @@ import re
 import sqlite3
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from urllib.parse import urlencode
 
 import pandas as pd
