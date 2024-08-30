@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from datetime import datetime
 
 import conftest
@@ -7,7 +6,8 @@ import dateutil
 import pytest
 
 from data_subscriber import cslc_utils
-from data_subscriber.cmr import DateTimeRange, get_cmr_token
+from data_subscriber.cmr import DateTimeRange
+from data_subscriber.cmr import get_cmr_token
 from data_subscriber.cslc_utils import CSLCDependency
 from data_subscriber.parser import create_parser
 from util.conf_util import SettingsConf

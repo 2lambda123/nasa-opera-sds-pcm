@@ -4,14 +4,17 @@ import logging
 import re
 from collections import defaultdict
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from functools import cache
 
 import boto3
 import dateutil
 import elasticsearch
 
-from data_subscriber.cmr import CMR_TIME_FORMAT, DateTimeRange, async_query_cmr
+from data_subscriber.cmr import async_query_cmr
+from data_subscriber.cmr import CMR_TIME_FORMAT
+from data_subscriber.cmr import DateTimeRange
 from util import datasets_json_util
 from util.conf_util import SettingsConf
 
