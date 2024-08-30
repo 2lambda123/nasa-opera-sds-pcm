@@ -807,8 +807,7 @@ if __name__ == "__main__":
         required=False,
         default="TEMPORAL",
         metavar="TEMPORAL|REVISION|PRODUCTION|CREATED",
-        help=
-        "Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision",
+        help="Use temporal, revision, or production time in start / end time granule query to CMR. Ex. --timestamp revision",
     )
     parser.add_argument("--start",
                         required=False,
@@ -827,14 +826,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--threshold",
         required=False,
-        help=
-        "Completion threshold minimum to filter results by (percentage format - leave out the % sign)",
+        help="Completion threshold minimum to filter results by (percentage format - leave out the % sign)",
     )
     parser.add_argument(
         "--matching_burst_count",
         required=False,
-        help=
-        "Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)",
+        help="Matching burst count to filter results by. Typically four or more is advised. Using this with the --threshold flag makes this flag inactive (only one of '--threshold' or '--matching_burst_count' may be used)",
     )
     parser.add_argument("--verbose",
                         action="store_true",
@@ -856,8 +853,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--validate",
         action="store_true",
-        help=
-        "Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)",
+        help="Validate if DSWx-S1 products have been delivered for given time range (use --timestamp TEMPORAL mode only)",
     )
     parser.add_argument(
         "--product",
