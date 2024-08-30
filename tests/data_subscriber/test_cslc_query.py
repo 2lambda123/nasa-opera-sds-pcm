@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
-import pytest
+from datetime import datetime
+
 import conftest
+import pytest
 
 from data_subscriber import cslc_utils
-from data_subscriber.parser import create_parser
-from data_subscriber.cslc import cslc_query
-from data_subscriber.submit_pending_jobs import condition_satisfied
-from datetime import datetime
 from data_subscriber.cmr import DateTimeRange
+from data_subscriber.cslc import cslc_query
+from data_subscriber.parser import create_parser
+from data_subscriber.submit_pending_jobs import condition_satisfied
 
 forward_arguments = [
     "query",

@@ -7,33 +7,23 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import dateutil.parser
+from hysds_commons.job_utils import submit_mozart_job
 from more_itertools import chunked
 
 from data_subscriber.catalog import ProductCatalog
-from data_subscriber.cmr import (
-    async_query_cmr,
-    ProductType,
-    DateTimeRange,
-    COLLECTION_TO_PRODUCT_TYPE_MAP,
-    COLLECTION_TO_PROVIDER_TYPE_MAP,
-)
-from data_subscriber.geojson_utils import (
-    localize_include_exclude,
-    filter_granules_by_regions,
-    download_from_s3,
-)
-from data_subscriber.rtc.rtc_download_job_submitter import (
-    submit_rtc_download_job_submissions_tasks,
-)
-from data_subscriber.cslc_utils import (
-    split_download_batch_id,
-    save_pending_download_job,
-    CSLCDependency,
-    ecmwf_satisfied,
-    parse_cslc_file_name,
-)
-from data_subscriber.url import form_batch_id, _slc_url_to_chunk_id
-from hysds_commons.job_utils import submit_mozart_job
+from data_subscriber.cmr import (COLLECTION_TO_PRODUCT_TYPE_MAP,
+                                 COLLECTION_TO_PROVIDER_TYPE_MAP,
+                                 DateTimeRange, ProductType, async_query_cmr)
+from data_subscriber.cslc_utils import (CSLCDependency, ecmwf_satisfied,
+                                        parse_cslc_file_name,
+                                        save_pending_download_job,
+                                        split_download_batch_id)
+from data_subscriber.geojson_utils import (download_from_s3,
+                                           filter_granules_by_regions,
+                                           localize_include_exclude)
+from data_subscriber.rtc.rtc_download_job_submitter import \
+    submit_rtc_download_job_submissions_tasks
+from data_subscriber.url import _slc_url_to_chunk_id, form_batch_id
 from util.conf_util import SettingsConf
 
 logger = logging.getLogger(__name__)

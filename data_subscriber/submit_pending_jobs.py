@@ -3,26 +3,22 @@
 """Goes through the list of pending jobs and submits them to the job queue
 after checking if they are ready to be submitted"""
 
-import boto3
 import logging
 import sys
 
-from commons.logger import NoJobUtilsFilter, NoBaseFilter, NoLogUtilsFilter
-from util.conf_util import SettingsConf
+import boto3
+from cslc_utils import (CSLCDependency, ecmwf_satisfied,
+                        get_pending_download_jobs,
+                        localize_disp_frame_burst_hist,
+                        mark_pending_download_job_submitted)
+
+from commons.logger import NoBaseFilter, NoJobUtilsFilter, NoLogUtilsFilter
+from data_subscriber import es_conn_util
 from data_subscriber.cmr import get_cmr_token
+from data_subscriber.cslc.cslc_catalog import CSLCProductCatalog
 from data_subscriber.parser import create_parser
 from data_subscriber.query import submit_download_job
-from data_subscriber import es_conn_util
-from cslc_utils import (
-    get_pending_download_jobs,
-    localize_disp_frame_burst_hist,
-    mark_pending_download_job_submitted,
-    CSLCDependency,
-    ecmwf_satisfied,
-)
-from data_subscriber.cslc.cslc_catalog import CSLCProductCatalog
-
-
+from util.conf_util import SettingsConf
 from util.exec_util import exec_wrapper
 
 logging.basicConfig(level="INFO")
