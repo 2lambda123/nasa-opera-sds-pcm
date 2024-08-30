@@ -27,6 +27,6 @@ def run(argv: list[str]):
     count = 1
     for job in unsubmitted:
         s = job['_source']
-        print("%05d" % count, "Type:", s['job_type'], ", Queue:", s['job_queue'], ", Job Params:", [f"{f['value']}" for f in s['job_params']])
+        print("%05d" % count, "Type:", s['job_type'], ", Queue:", s['job_queue'], ", Acq Time List:", s['acq_time_list'], ", Job Params:", [f"{f['value']}" for f in s['job_params']])
 if __name__ == "__main__":
     main()

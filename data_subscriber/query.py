@@ -14,12 +14,12 @@ from data_subscriber.cmr import (async_query_cmr,
                                  ProductType, DateTimeRange,
                                  COLLECTION_TO_PRODUCT_TYPE_MAP,
                                  COLLECTION_TO_PROVIDER_TYPE_MAP)
-from data_subscriber.cslc_utils import split_download_batch_id
 from data_subscriber.geojson_utils import (localize_include_exclude,
                                            filter_granules_by_regions,
                                            download_from_s3)
 from data_subscriber.rtc.rtc_download_job_submitter import submit_rtc_download_job_submissions_tasks
-from data_subscriber.cslc_utils import split_download_batch_id, save_blocked_download_job, CSLCDependency
+from data_subscriber.cslc_utils import (split_download_batch_id, save_pending_download_job, CSLCDependency,
+                                        ecmwf_satisfied, parse_cslc_file_name)
 from data_subscriber.url import form_batch_id, _slc_url_to_chunk_id
 from hysds_commons.job_utils import submit_mozart_job
 from util.conf_util import SettingsConf
@@ -268,18 +268,40 @@ class CmrQuery:
 
             product_type = COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection].lower()
             if COLLECTION_TO_PRODUCT_TYPE_MAP[self.args.collection] == ProductType.CSLC:
+
+                acq_time_list = []
+                block_download = False
+
+                # Create list of the earliest acquisition times for each batch. Each batch corresponds to a k
+                for batch_id, urls in batch_chunk:
+
+                    # Find the earliest acquisition time for each batch and append
+                    earliest_acq_time = "99990822T123331Z" # Yes, this is year 9999!
+                    for url in list(urls):
+                        filename = Path(url).name[:-3]
+                        _, acq_time = parse_cslc_file_name(filename)
+                        if acq_time < earliest_acq_time: # Time is in format YYYYMMDDTHHMMSSZ so this comparison works
+                            earliest_acq_time = acq_time
+                    acq_time_list.append(earliest_acq_time)
+
                 frame_id = split_download_batch_id(chunk_batch_ids[0])[0]
                 acq_indices = [split_download_batch_id(chunk_batch_id)[1] for chunk_batch_id in chunk_batch_ids]
                 job_name = f"job-WF-{product_type}_download-frame-{frame_id}-acq_indices-{min(acq_indices)}-to-{max(acq_indices)}"
 
-                # See if all the compressed cslcs are satisfied. If not, do not submit the job. Instead, save all the job info in ES
-                # and wait for the next query to come in. Any acquisition index will work because all batches
-                # require the same compressed cslcs
+                # See if all the compressed cslcs and ecmwf files are satisfied. If not, do not submit the job.
+                # Instead, save all the job info in ES and wait for the next query to come in.
+                # Any acquisition index will work because all batches require the same compressed cslcs
                 if not cslc_dependency.compressed_cslc_satisfied(frame_id, acq_indices[0], self.es_conn.es_util):
-                    logger.info(f"Not all compressed CSLCs are satisfied so this download job is blocked until they are satisfied")
-                    save_blocked_download_job(self.es_conn.es_util, self.settings["RELEASE_VERSION"],
-                                              product_type, params, self.args.job_queue, job_name,
-                                              frame_id, acq_indices[0], self.args.k, self.args.m, chunk_batch_ids)
+                    logger.info(f"Not all compressed CSLCs are satisfied so this download job is in pending state until they are satisfied")
+                    block_download = True
+                if not ecmwf_satisfied(acq_time_list):
+                    logger.info(f"Not all ECMWF data is satisfied so this download job is in pending state until they are satisfied")
+                    block_download = True
+
+                if (block_download):
+                    save_pending_download_job(self.es_conn.es_util, self.settings["RELEASE_VERSION"],
+                                              product_type, params, self.args.job_queue, job_name, frame_id,
+                                              acq_indices[0], self.args.k, self.args.m, chunk_batch_ids, acq_time_list)
 
                     # While we technically do not have a download job here, we mark it as so in ES.
                     # That's because this flag is used to determine if the granule has been triggered or not
