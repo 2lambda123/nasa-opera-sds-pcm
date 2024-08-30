@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class CslcCmrQuery(CmrQuery):
+    """ """
 
     def __init__(
         self,
@@ -63,6 +64,7 @@ class CslcCmrQuery(CmrQuery):
         self.k_es_conn = KCSLCProductCatalog(logging.getLogger(__name__))
 
     def validate_args(self):
+        """ """
 
         if self.proc_mode == "historical":
             if self.args.frame_id is None:
@@ -101,7 +103,13 @@ class CslcCmrQuery(CmrQuery):
     ):
         """Add frame_id, burst_id, and acquisition_cycle to all granules.
         In forward  and re-processing modes, extend the granules with potentially additional records
-        if a burst belongs to two frames."""
+        if a burst belongs to two frames.
+
+        :param granules: 
+        :param no_duplicate:  (Default value = False)
+        :param force_frame_id:  (Default value = None)
+
+        """
 
         extended_granules = []
         for granule in granules:
@@ -146,6 +154,11 @@ class CslcCmrQuery(CmrQuery):
     def prepare_additional_fields(self, granule, args, granule_id):
         """For CSLC this is used to determine download_batch_id and attaching it the granule.
         Function extend_additional_records must have been called before this function.
+
+        :param granule: 
+        :param args: 
+        :param granule_id: 
+
         """
 
         download_batch_id = download_batch_id_forward_reproc(granule)
@@ -172,7 +185,11 @@ class CslcCmrQuery(CmrQuery):
     def determine_download_granules(self, granules):
         """In forward processing mode combine these new granules with existing unsubmitted granules to determine
         which granules to download. And also retrieve k granules.
-        In reprocessing, just retrieve the k granules."""
+        In reprocessing, just retrieve the k granules.
+
+        :param granules: 
+
+        """
 
         if self.proc_mode == "reprocessing":
             if len(granules) == 0:
@@ -344,7 +361,14 @@ since the first CSLC file for the batch was ingested which is greater than the g
         self, downloads, args, k_minus_one, VV_only=True, silent=False
     ):
         """# Go back as many 12-day windows as needed to find k- granules that have at least the same bursts as the current frame
-        Return all the granules that satisfy that"""
+
+        :param downloads: 
+        :param args: 
+        :param k_minus_one: 
+        :param VV_only:  (Default value = True)
+        :param silent:  (Default value = False)
+
+        """
         k_granules = []
         k_satified = 0
         new_args = copy.deepcopy(args)
@@ -428,6 +452,16 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return k_granules
 
     def query_cmr_by_native_id(self, args, token, cmr, settings, now, native_id):
+        """
+
+        :param args: 
+        :param token: 
+        :param cmr: 
+        :param settings: 
+        :param now: 
+        :param native_id: 
+
+        """
 
         local_args = copy.deepcopy(args)
 
@@ -482,6 +516,17 @@ since the first CSLC file for the batch was ingested which is greater than the g
     def query_cmr_by_frame_and_dates(
         self, args, token, cmr, settings, now, timerange, silent=False
     ):
+        """
+
+        :param args: 
+        :param token: 
+        :param cmr: 
+        :param settings: 
+        :param now: 
+        :param timerange: 
+        :param silent:  (Default value = False)
+
+        """
 
         frame_id = int(self.args.frame_id)
         if frame_id not in self.disp_burst_map_hist:
@@ -507,6 +552,16 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return all_granules
 
     def query_cmr(self, args, token, cmr, settings, timerange, now):
+        """
+
+        :param args: 
+        :param token: 
+        :param cmr: 
+        :param settings: 
+        :param timerange: 
+        :param now: 
+
+        """
 
         # If we are in historical mode, we will query one frame worth at a time
         if self.proc_mode == "historical":
@@ -590,7 +645,12 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return all_granules
 
     def create_download_job_params(self, query_timerange, chunk_batch_ids):
-        """Same as base class except inject batch_ids for k granules"""
+        """Same as base class except inject batch_ids for k granules
+
+        :param query_timerange: 
+        :param chunk_batch_ids: 
+
+        """
 
         assert len(chunk_batch_ids) == 1
         chunk_batch_ids.extend(list(self.k_batch_ids[chunk_batch_ids[0]]))
@@ -599,9 +659,13 @@ since the first CSLC file for the batch was ingested which is greater than the g
     def eliminate_duplicate_granules(self, granules):
         """For CSLC granules revision_id is always one. Instead, we correlate the granules by the unique_id
         which is a function of download_batch_id and burst_id
-
+        
         You must run extend_additional_records before calling this function because it requires granules to have
-        many properties that are added by that function."""
+        many properties that are added by that function.
+
+        :param granules: 
+
+        """
 
         granule_dict = {}
         for granule in granules:
@@ -621,7 +685,11 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return granules
 
     def eliminate_none_frames(self, granules):
-        """Get rid of frames that don't show up in the historical database json."""
+        """Get rid of frames that don't show up in the historical database json.
+
+        :param granules: 
+
+        """
 
         new_granules = []
         for granule in granules:
@@ -632,7 +700,11 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return new_granules
 
     def get_download_chunks(self, batch_id_to_urls_map):
-        """For CSLC chunks we must group them by the batch_id that were determined at the time of triggering"""
+        """For CSLC chunks we must group them by the batch_id that were determined at the time of triggering
+
+        :param batch_id_to_urls_map: 
+
+        """
 
         chunk_map = defaultdict(list)
         for batch_chunk in batch_id_to_urls_map.items():
@@ -650,6 +722,7 @@ since the first CSLC file for the batch was ingested which is greater than the g
         return chunk_map.values()
 
     def refresh_index(self):
+        """ """
         logger.info("performing index refresh")
         self.es_conn.refresh()
         logger.info("performed index refresh")

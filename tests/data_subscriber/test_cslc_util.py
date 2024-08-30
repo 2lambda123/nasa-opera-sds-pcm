@@ -31,6 +31,7 @@ disp_burst_map_hist, burst_to_frames, datetime_to_frames = (
 
 
 def test_burst_map():
+    """ """
     assert len(disp_burst_map_hist.keys()) == 1433
     burst_set = set()
     for burst in [
@@ -74,7 +75,10 @@ def test_arg_expansion():
 
 def test_burst_to_frame_map():
     """Test that the burst to frame map is correctly constructed
-    Bursts belong to exactly 1 or 2 frames"""
+    Bursts belong to exactly 1 or 2 frames
+
+
+    """
     assert burst_to_frames["T004-006648-IW3"][0] == 831
     assert burst_to_frames["T004-006649-IW3"][0] == 831
     assert burst_to_frames["T004-006649-IW3"][1] == 832
@@ -195,6 +199,7 @@ def test_determine_k_cycle():
 
 
 def test_get_prev_day_indices():
+    """ """
     args = create_parser().parse_args(
         [
             "query",
@@ -233,10 +238,12 @@ def test_get_prev_day_indices():
 
 
 def test_determine_submitted_retrigger():
+    """ """
     pass
 
 
 def test_get_dependent_ccslc_index():
+    """ """
     prev_day_indices = [0, 24, 48, 72]
     assert "t041_086868_iw1_72" == cslc_utils.get_dependent_ccslc_index(
         prev_day_indices, 0, 2, "t041_086868_iw1"
