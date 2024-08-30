@@ -1,6 +1,9 @@
 from chimera.commons.constants import ChimeraConstants
 
+
 class OperaChimeraConstants(ChimeraConstants):
+    """ """
+
     def __init__(self):
         ChimeraConstants.__init__(self)
 
@@ -90,7 +93,8 @@ class OperaChimeraConstants(ChimeraConstants):
 
     INPUT_MGRS_COLLECTION_ID = "input_mgrs_collection_id"
 
-    INSTANTIATE_ALGORITHM_PARAMETERS_TEMPLATE = "instantiate_algorithm_parameters_template"
+    INSTANTIATE_ALGORITHM_PARAMETERS_TEMPLATE = (
+        "instantiate_algorithm_parameters_template")
 
     INUNDATED_VEGETATION_ENABLED = "inundated_vegetation_enabled"
 
