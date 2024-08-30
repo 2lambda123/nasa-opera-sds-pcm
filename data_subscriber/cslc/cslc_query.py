@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from data_subscriber.cmr import async_query_cmr, CMR_TIME_FORMAT
 from data_subscriber.cslc_utils import (localize_disp_frame_burst_hist,  build_cslc_native_ids,  parse_cslc_native_id,
                                         process_disp_frame_burst_hist, download_batch_id_forward_reproc, split_download_batch_id,
-                                        parse_cslc_file_name, CSLCDependency)
+                                        parse_cslc_file_name, CSLCDependency, determine_submitted_retrigger)
 from data_subscriber.query import CmrQuery, DateTimeRange
 from data_subscriber.url import cslc_unique_id
 from data_subscriber.cslc.cslc_catalog import KCSLCProductCatalog
@@ -181,6 +181,17 @@ class CslcCmrQuery(CmrQuery):
                 for granule in submitted:
                     download_granules.append(granule)
                 self.download_batch_ids[batch_id].add(batch_id)'''
+
+        # Rule #4: If we have a new granule for a batch that'd already been submitted,
+        # submit again using the new granule only for the bursts that match, and only if the production time is later
+        for batch_id, download_batch in by_download_batch_id.items():
+            submitted_granules = self.es_conn.get_submitted_granules(batch_id) # batch_id uniquely identifies a triggered evaluation
+            frame_id, _ = split_download_batch_id(batch_id)
+            len_burst_ids = len(self.disp_burst_map_hist[frame_id].burst_ids)
+            trigger_this_batch, batch_download_granules = determine_submitted_retrigger(submitted_granules, download_batch, len_burst_ids)
+            if trigger_this_batch:
+                download_granules.extend(batch_download_granules.values())
+                self.download_batch_ids[batch_id].add(batch_id)
 
         for granule in unsubmitted:
             logger.info(f"Merging in unsubmitted granule {granule['unique_id']}: {granule['granule_id']} for triggering consideration")
