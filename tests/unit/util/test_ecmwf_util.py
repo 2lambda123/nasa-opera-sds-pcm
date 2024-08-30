@@ -1,16 +1,13 @@
 from collections import namedtuple
 from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import botocore.client
 import botocore.exceptions
 import pytest
 
-from util.ecmwf_util import (
-    check_s3_for_ecmwf,
-    ecmwf_key_for_datetime,
-    find_ecmwf_for_datetime,
-)
+from util.ecmwf_util import (check_s3_for_ecmwf, ecmwf_key_for_datetime,
+                             find_ecmwf_for_datetime)
 
 
 def test_check_s3_for_ecmwf(caplog):

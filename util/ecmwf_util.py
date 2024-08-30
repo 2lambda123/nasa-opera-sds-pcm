@@ -10,10 +10,10 @@ Contains utility functions for working with ECMWF (Troposphere) weather files.
 from datetime import datetime
 from urllib.parse import urlparse
 
-from commons.logger import logger
-
-import botocore
 import boto3
+import botocore
+
+from commons.logger import logger
 
 s3_client = boto3.client("s3")
 

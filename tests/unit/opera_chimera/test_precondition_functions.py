@@ -5,7 +5,7 @@ import os
 import tempfile
 import unittest
 from os.path import exists, join
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from zipfile import ZipFile
 
 import boto3.resources.collection
@@ -16,9 +16,8 @@ import botocore.exceptions
 import tools.stage_ancillary_map
 import tools.stage_dem
 import tools.stage_worldcover
-from opera_chimera.constants.opera_chimera_const import (
-    OperaChimeraConstants as oc_const,
-)
+from opera_chimera.constants.opera_chimera_const import \
+    OperaChimeraConstants as oc_const
 from opera_chimera.precondition_functions import OperaPreConditionFunctions
 
 
