@@ -3,7 +3,6 @@ import concurrent.futures
 import json
 import logging
 import multiprocessing
-import random
 import re
 import sqlite3
 import sys
@@ -17,6 +16,7 @@ import requests
 import tqdm
 from requests import get
 from tabulate import tabulate
+import secrets
 
 # Constants
 CMR_GRANULES_API_ENDPOINT = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
@@ -85,7 +85,7 @@ def fetch_with_backoff(url, params):
             # Exponential backoff with jitter
             attempts += 1
             delay = min(max_delay, base_delay * 2**attempts)
-            jitter = random.uniform(0, delay / 2)
+            jitter = secrets.SystemRandom().uniform(0, delay / 2)
             time.sleep(delay + jitter)
             print(
                 f"Retrying page {params.get('page_num')} after delay of {delay + jitter} seconds due to error: {e}"
@@ -190,8 +190,7 @@ def get_total_granules(url, params, retries=5, backoff_factor=1):
             return response["hits"]
         except RuntimeError as e:
             if attempt < retries - 1:
-                sleep_time = backoff_factor * (2**attempt) + random.uniform(
-                    0, 1)
+                sleep_time = backoff_factor * (2**attempt) + secrets.SystemRandom().uniform(0, 1)
                 time.sleep(sleep_time)
             else:
                 raise RuntimeError(
@@ -364,7 +363,7 @@ def get_granules_from_query(start,
                     downloaded_batches,
                 )
                 futures.append(future)
-                random_delay = random.uniform(0, 0.1)
+                random_delay = secrets.SystemRandom().uniform(0, 0.1)
                 # Stagger the submission of function calls for CMR optimization
                 time.sleep(random_delay)
                 logging.debug(f"Scheduled granule fetch for batch {page_num}")
