@@ -51,7 +51,11 @@ def test_extend_additional_records():
 
 
 def test_reprocessing_by_native_id(caplog):
-    """Tests reprocessing query commands and high-level processing when specifying a native_id"""
+    """Tests reprocessing query commands and high-level processing when specifying a native_id
+
+    :param caplog: 
+
+    """
     reprocessing_arguments = [
         "query",
         "-c",
@@ -80,7 +84,11 @@ def test_reprocessing_by_native_id(caplog):
 
 
 def test_historical_query(caplog):
-    """Tests historical query commands and high-level processing when specifying a frame range"""
+    """Tests historical query commands and high-level processing when specifying a frame range
+
+    :param caplog: 
+
+    """
     hist_arguments = [
         "query",
         "-c",

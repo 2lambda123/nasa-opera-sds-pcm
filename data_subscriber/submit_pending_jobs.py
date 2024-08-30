@@ -27,11 +27,13 @@ logger = logging.getLogger(__name__)
 
 @exec_wrapper
 def main():
+    """ """
     configure_logger()
     run(sys.argv)
 
 
 def configure_logger():
+    """ """
     logger_hysds_commons = logging.getLogger("hysds_commons")
     logger_hysds_commons.addFilter(NoJobUtilsFilter())
 
@@ -46,6 +48,17 @@ def configure_logger():
 def condition_satisfied(
     job_source, es, disp_burst_map, query_args, token, cmr, settings
 ):
+    """
+
+    :param job_source: 
+    :param es: 
+    :param disp_burst_map: 
+    :param query_args: 
+    :param token: 
+    :param cmr: 
+    :param settings: 
+
+    """
     k = job_source["k"]
     m = job_source["m"]
     frame_id = job_source["frame_id"]
@@ -100,6 +113,11 @@ def condition_satisfied(
 
 
 def run(argv: list[str]):
+    """
+
+    :param argv: list[str]: 
+
+    """
     logger.info(f"{argv=}")
 
     job_submission_tasks = []

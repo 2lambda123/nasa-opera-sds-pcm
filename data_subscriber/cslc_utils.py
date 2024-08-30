@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class _HistBursts(object):
+    """ """
     def __init__(self):
         self.frame_number = None
         self.burst_ids = set()  # Burst ids as strings in a set
@@ -38,6 +39,11 @@ class _HistBursts(object):
 
 
 def localize_anc_json(file):
+    """
+
+    :param file: 
+
+    """
     settings = SettingsConf().cfg
     bucket = settings["GEOJSON_BUCKET"]
     try:
@@ -53,6 +59,11 @@ def localize_anc_json(file):
 
 @cache
 def localize_disp_frame_burst_hist(file=DISP_FRAME_BURST_MAP_HIST):
+    """
+
+    :param file:  (Default value = DISP_FRAME_BURST_MAP_HIST)
+
+    """
     try:
         localize_anc_json(file)
     except:
@@ -65,6 +76,11 @@ def localize_disp_frame_burst_hist(file=DISP_FRAME_BURST_MAP_HIST):
 
 @cache
 def localize_frame_geo_json(file=FRAME_GEO_SIMPLE_JSON):
+    """
+
+    :param file:  (Default value = FRAME_GEO_SIMPLE_JSON)
+
+    """
     try:
         localize_anc_json(file)
     except:
@@ -76,7 +92,12 @@ def localize_frame_geo_json(file=FRAME_GEO_SIMPLE_JSON):
 
 
 def _calculate_sensing_time_day_index(sensing_time: datetime, first_frame_time):
-    """Return the day index of the sensing time relative to the first sensing time of the frame"""
+    """
+
+    :param sensing_time: datetime: 
+    :param first_frame_time: 
+
+    """
 
     delta = sensing_time - first_frame_time
     seconds = int(delta.total_seconds())
@@ -94,8 +115,14 @@ def _calculate_sensing_time_day_index(sensing_time: datetime, first_frame_time):
 
 
 def sensing_time_day_index(sensing_time: datetime, frame_number: int, frame_to_bursts):
-    """Return the day index of the sensing time relative to the first sensing time of the frame AND
-    seconds since the first sensing time of the frame"""
+    """
+
+    :param sensing_time: datetime: 
+    :param frame_number: int: 
+    :param frame_to_bursts: 
+    :returns: seconds since the first sensing time of the frame
+
+    """
 
     frame = frame_to_bursts[frame_number]
     return _calculate_sensing_time_day_index(sensing_time, frame.sensing_datetimes[0])
@@ -103,7 +130,11 @@ def sensing_time_day_index(sensing_time: datetime, frame_number: int, frame_to_b
 
 @cache
 def process_disp_frame_burst_hist(file=DISP_FRAME_BURST_MAP_HIST):
-    """Process the disp frame burst map json file intended and return 3 dictionaries"""
+    """Process the disp frame burst map json file intended and return 3 dictionaries
+
+    :param file:  (Default value = DISP_FRAME_BURST_MAP_HIST)
+
+    """
 
     j = json.load(open(file))
     frame_to_bursts = defaultdict(_HistBursts)
@@ -142,7 +173,11 @@ def process_disp_frame_burst_hist(file=DISP_FRAME_BURST_MAP_HIST):
 
 @cache
 def process_frame_geo_json(file=FRAME_GEO_SIMPLE_JSON):
-    """Process the frame-geometries-simple.geojson file as dictionary used for determining frame bounding box"""
+    """Process the frame-geometries-simple.geojson file as dictionary used for determining frame bounding box
+
+    :param file:  (Default value = FRAME_GEO_SIMPLE_JSON)
+
+    """
 
     frame_geo_map = {}
     j = json.load(open(file))
@@ -153,6 +188,11 @@ def process_frame_geo_json(file=FRAME_GEO_SIMPLE_JSON):
 
 
 def parse_cslc_file_name(native_id):
+    """
+
+    :param native_id: 
+
+    """
     dataset_json = datasets_json_util.DatasetsJson()
     cslc_granule_regex = dataset_json.get("L2_CSLC_S1")["match_pattern"]
     match_product_id = re.match(cslc_granule_regex, native_id)
@@ -170,6 +210,13 @@ def parse_cslc_file_name(native_id):
 def determine_acquisition_cycle_cslc(
     acquisition_dts: datetime, frame_number: int, frame_to_bursts
 ):
+    """
+
+    :param acquisition_dts: datetime: 
+    :param frame_number: int: 
+    :param frame_to_bursts: 
+
+    """
 
     day_index, seconds = sensing_time_day_index(
         acquisition_dts, frame_number, frame_to_bursts
@@ -178,6 +225,7 @@ def determine_acquisition_cycle_cslc(
 
 
 class CSLCDependency:
+    """ """
     def __init__(
         self, k: int, m: int, frame_to_bursts, args, token, cmr, settings, VV_only=True
     ):
@@ -191,7 +239,12 @@ class CSLCDependency:
         self.VV_only = VV_only
 
     def get_prev_day_indices(self, day_index: int, frame_number: int):
-        """Return the day indices of the previous acquisitions for the frame_number given the current day index"""
+        """
+
+        :param day_index: int: 
+        :param frame_number: int: 
+
+        """
 
         if frame_number not in self.frame_to_bursts:
             raise Exception(
@@ -225,9 +278,14 @@ class CSLCDependency:
             return all_prev_indices
 
     def get_k_granules_from_cmr(self, query_timerange, frame_number: int, silent=False):
-        """Return two dictionaries that satisfy the burst pattern for the frame_number within the time range:
-        1. acq_index_to_bursts: day index to set of burst ids
+        """
+
+        :param query_timerange: 
+        :param frame_number: int: 
+        :param silent:  (Default value = False)
+        :returns: 1. acq_index_to_bursts: day index to set of burst ids
         2. acq_index_to_granules: day index to list of granules that match the burst
+
         """
         acq_index_to_bursts = defaultdict(set)
         acq_index_to_granules = defaultdict(list)
@@ -285,9 +343,13 @@ class CSLCDependency:
     ):
         """Return where in the k-cycle this acquisition falls for the frame_number
         Must specify either acquisition_dts or day_index.
-        Returns integer between 0 and k-1 where 0 means that it's at the start of the cycle
 
-        Assumption: This current frame satisfies the burst pattern already; we don't need to check for that here
+        :param acquisition_dts: datetime: 
+        :param day_index: int: 
+        :param frame_number: int: 
+        :param silent:  (Default value = False)
+        :returns: Assumption: This current frame satisfies the burst pattern already; we don't need to check for that here
+
         """
 
         if day_index is None:
@@ -339,6 +401,13 @@ class CSLCDependency:
             return index_number % self.k
 
     def compressed_cslc_satisfied(self, frame_id, day_index, eu):
+        """
+
+        :param frame_id: 
+        :param day_index: 
+        :param eu: 
+
+        """
 
         if self.get_dependent_compressed_cslcs(frame_id, day_index, eu) == False:
             return False
@@ -348,6 +417,11 @@ class CSLCDependency:
         """Search for all previous M compressed CSLCs
         prev_day_indices: The acquisition cycle indices of all collects that show up in disp_burst_map previous of
                             the latest acq cycle index
+
+        :param frame_id: 
+        :param day_index: 
+        :param eu: 
+
         """
 
         prev_day_indices = self.get_prev_day_indices(day_index, frame_id)
@@ -404,7 +478,14 @@ class CSLCDependency:
 
 def get_dependent_ccslc_index(prev_day_indices, mm, k, burst_id):
     """last_m_index: The index of the last M compressed CSLC, index into prev_day_indices
-    acq_cycle_index: The index of the acq cycle, index into disp_burst_map"""
+    acq_cycle_index: The index of the acq cycle, index into disp_burst_map
+
+    :param prev_day_indices: 
+    :param mm: 
+    :param k: 
+    :param burst_id: 
+
+    """
     num_prev_indices = len(prev_day_indices)
     last_m_index = num_prev_indices // k
     last_m_index *= k
@@ -419,6 +500,13 @@ def get_dependent_ccslc_index(prev_day_indices, mm, k, burst_id):
 
 
 def parse_cslc_native_id(native_id, burst_to_frames, frame_to_bursts):
+    """
+
+    :param native_id: 
+    :param burst_to_frames: 
+    :param frame_to_bursts: 
+
+    """
 
     burst_id, acquisition_dts = parse_cslc_file_name(native_id)
     acquisition_dts = dateutil.parser.isoparse(
@@ -454,7 +542,22 @@ def save_pending_download_job(
     batch_ids,
     acq_time_list=None,
 ):
-    """Save the blocked download job in the ES index"""
+    """Save the blocked download job in the ES index
+
+    :param eu: 
+    :param release_version: 
+    :param product_type: 
+    :param params: 
+    :param job_queue: 
+    :param job_name: 
+    :param frame_id: 
+    :param acq_index: 
+    :param k: 
+    :param m: 
+    :param batch_ids: 
+    :param acq_time_list:  (Default value = None)
+
+    """
 
     eu.index_document(
         index=PENDING_CSLC_DOWNLOADS_ES_INDEX_NAME,
@@ -482,7 +585,11 @@ def save_pending_download_job(
 
 
 def get_pending_download_jobs(es):
-    """Retrieve all pending cslc download jobs from the ES index"""
+    """Retrieve all pending cslc download jobs from the ES index
+
+    :param es: 
+
+    """
 
     try:
         result = es.query(
@@ -505,6 +612,11 @@ def get_pending_download_jobs(es):
 
 
 def ecmwf_satisfied(acq_time_list):
+    """
+
+    :param acq_time_list: 
+
+    """
     for acq_time in acq_time_list:
         # TODO: perform actual lookup
         logger.info(f"Looking up ECMWF for acquisition time: {acq_time}")
@@ -512,6 +624,13 @@ def ecmwf_satisfied(acq_time_list):
 
 
 def mark_pending_download_job_submitted(es, doc_id, download_job_id):
+    """
+
+    :param es: 
+    :param doc_id: 
+    :param download_job_id: 
+
+    """
     return es.update_document(
         index=PENDING_CSLC_DOWNLOADS_ES_INDEX_NAME,
         id=doc_id,
@@ -523,13 +642,23 @@ def mark_pending_download_job_submitted(es, doc_id, download_job_id):
 
 
 def parse_cslc_burst_id(native_id):
+    """
+
+    :param native_id: 
+
+    """
 
     burst_id, _ = parse_cslc_file_name(native_id)
     return burst_id
 
 
 def build_cslc_native_ids(frame, disp_burst_map):
-    """Builds the native_id string for a given frame. The native_id string is used in the CMR query."""
+    """Builds the native_id string for a given frame. The native_id string is used in the CMR query.
+
+    :param frame: 
+    :param disp_burst_map: 
+
+    """
 
     native_ids = list(disp_burst_map[frame].burst_ids)
     native_ids = sorted(native_ids)  # Sort to just enforce consistency
@@ -540,9 +669,11 @@ def build_cslc_native_ids(frame, disp_burst_map):
 
 
 def build_cslc_static_native_ids(burst_ids):
-    """
-    Builds the native_id string used with a CMR query for CSLC-S1 Static Layer
+    """Builds the native_id string used with a CMR query for CSLC-S1 Static Layer
     products based on the provided list of burst IDs.
+
+    :param burst_ids: 
+
     """
     return (
         "OPERA_L2_CSLC-S1-STATIC_"
@@ -552,11 +683,21 @@ def build_cslc_static_native_ids(burst_ids):
 
 
 def build_ccslc_m_index(burst_id, acquisition_cycle):
+    """
+
+    :param burst_id: 
+    :param acquisition_cycle: 
+
+    """
     return (burst_id + "_" + str(acquisition_cycle)).replace("-", "_").lower()
 
 
 def download_batch_id_forward_reproc(granule):
-    """For forward and re-processing modes, download_batch_id is a function of the granule's frame_id and acquisition_cycle"""
+    """For forward and re-processing modes, download_batch_id is a function of the granule's frame_id and acquisition_cycle
+
+    :param granule: 
+
+    """
 
     download_batch_id = (
         "f" + str(granule["frame_id"]) + "_a" + str(granule["acquisition_cycle"])
@@ -567,14 +708,23 @@ def download_batch_id_forward_reproc(granule):
 
 def split_download_batch_id(download_batch_id):
     """Split the download_batch_id into frame_id and acquisition_cycle
-    example: forward/reproc f7098_a145 -> 7098, 145"""
+    example: forward/reproc f7098_a145 -> 7098, 145
+
+    :param download_batch_id: 
+
+    """
     frame_id, acquisition_cycle = download_batch_id.split("_")
     # Remove the leading "f" and "a"
     return int(frame_id[1:]), int(acquisition_cycle[1:])
 
 
 def get_bounding_box_for_frame(frame_id: int, frame_geo_map):
-    """Returns a bounding box for a given frame in the format of [xmin, ymin, xmax, ymax] in EPSG4326 coordinate system"""
+    """Returns a bounding box for a given frame in the format of [xmin, ymin, xmax, ymax] in EPSG4326 coordinate system
+
+    :param frame_id: int: 
+    :param frame_geo_map: 
+
+    """
 
     coords = frame_geo_map[frame_id]
     xmin = min([x for x, y in coords])

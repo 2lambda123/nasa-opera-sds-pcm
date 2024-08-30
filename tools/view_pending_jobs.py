@@ -15,10 +15,16 @@ logger = logging.getLogger(__name__)
 
 @exec_wrapper
 def main():
+    """ """
     run(sys.argv)
 
 
 def run(argv: list[str]):
+    """
+
+    :param argv: list[str]: 
+
+    """
     es = es_conn_util.get_es_connection(logger)
 
     # Get unsubmitted jobs from Elasticsearch GRQ
