@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-
 """Goes through the list of pending jobs and submits them to the job queue
 after checking if they are ready to be submitted"""
-
 import logging
 import sys
 
 import boto3
-from cslc_utils import (CSLCDependency, ecmwf_satisfied,
-                        get_pending_download_jobs,
-                        localize_disp_frame_burst_hist,
-                        mark_pending_download_job_submitted)
+from cslc_utils import CSLCDependency
+from cslc_utils import ecmwf_satisfied
+from cslc_utils import get_pending_download_jobs
+from cslc_utils import localize_disp_frame_burst_hist
+from cslc_utils import mark_pending_download_job_submitted
 
-from commons.logger import NoBaseFilter, NoJobUtilsFilter, NoLogUtilsFilter
+from commons.logger import NoBaseFilter
+from commons.logger import NoJobUtilsFilter
+from commons.logger import NoLogUtilsFilter
 from data_subscriber import es_conn_util
 from data_subscriber.cmr import get_cmr_token
 from data_subscriber.cslc.cslc_catalog import CSLCProductCatalog

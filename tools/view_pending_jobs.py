@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-
 """List and show all pending jobs"""
-
 import logging
 import sys
 
