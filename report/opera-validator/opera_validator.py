@@ -36,7 +36,7 @@ def get_custom(url, params):
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
-    :param url:
+    :param url: param params:
     :param params:
     :returns: Query results as a dict (json) object
 
@@ -66,7 +66,7 @@ def fetch_with_backoff(url, params):
     :url: Base url to query cmr
 
     :param s: The parameter arguments for the given url
-    :param url:
+    :param url: param params:
     :param params:
     :returns: Batch of granules (json/dict objects)
 
@@ -102,11 +102,11 @@ def parallel_fetch(url, params, page_num, page_size, downloaded_batches):
     :page_size (int): The number of granules to fetch per page.
     :downloaded_batches (multiprocessing.Value): A shared integer value representing
         the number of batches that have been successfully downloaded.
-    :param url:
+    :param url: param params:
+    :param page_num: param page_size:
+    :param downloaded_batches: returns: list): A list of batch granules fetched from the API.
     :param params:
-    :param page_num:
     :param page_size:
-    :param downloaded_batches:
     :returns: list): A list of batch granules fetched from the API.
 
     """
@@ -133,7 +133,7 @@ def get_burst_id(granule_id):
 
     :granule_id (str): The granule ID from which to extract the burst ID.
 
-    :param granule_id:
+    :param granule_id: returns: str): The extracted burst ID, or an empty string if not found.
     :returns: str): The extracted burst ID, or an empty string if not found.
 
     """
@@ -154,7 +154,7 @@ def get_burst_sensing_datetime(granule_id):
 
     :granule_id (str): The granule ID from which to extract the burst ID.
 
-    :param granule_id:
+    :param granule_id: returns: str): The extracted burst sensing date-time, or an empty string if not found.
     :returns: str): The extracted burst sensing date-time, or an empty string if not found.
 
     """
@@ -175,10 +175,10 @@ def get_total_granules(url, params, retries=5, backoff_factor=1):
     :param s: The parameter arguments for the given url
     :retries: Number of retry attempts.
     :backoff_factor: Factor to determine the next sleep time.
-    :param url:
+    :param url: param params:
+    :param retries: Default value = 5)
+    :param backoff_factor: Default value = 1)
     :param params:
-    :param retries:  (Default value = 5)
-    :param backoff_factor:  (Default value = 1)
     :returns: Total number of granules.
 
     """
@@ -303,14 +303,14 @@ def get_granules_from_query(start,
     :endpoint: CMR API endpoint ('OPS' or 'UAT').
     :provider: Data provider ID (default 'ASF').
     :shortname: Short name of the product (default 'OPERA_L2_RTC-S1_V1').
-    :return: List of granule metadata.
 
-    :param start:
+    :param start: param end:
+    :param timestamp: param endpoint:
+    :param provider: Default value = "ASF")
+    :param shortname: Default value = "OPERA_L2_RTC-S1_V1")
     :param end:
-    :param timestamp:
     :param endpoint:
-    :param provider:  (Default value = "ASF")
-    :param shortname:  (Default value = "OPERA_L2_RTC-S1_V1")
+    :returns: List of granule metadata.
 
     """
 
@@ -392,9 +392,9 @@ def get_granule_ids_from_granules(granules):
     """Extracts granule IDs from a list of granule metadata.
 
     :granules: List of granule metadata dictionaries.
-    :return: List of granule IDs.
 
     :param granules:
+    :returns: List of granule IDs.
 
     """
 
@@ -421,14 +421,14 @@ def get_burst_ids_and_sensing_times_from_query(start,
     :endpoint: CMR API endpoint ('OPS' or 'UAT').
     :provider: Data provider ID (default 'ASF').
     :shortname: Product short name (default 'OPERA_L2_RTC-S1_V1').
-    :return: Two dictionaries - one mapping burst IDs to granule IDs, and another mapping burst IDs to sensing times.
 
-    :param start:
+    :param start: param end:
+    :param timestamp: param endpoint:
+    :param provider: Default value = "ASF")
+    :param shortname: Default value = "OPERA_L2_RTC-S1_V1")
     :param end:
-    :param timestamp:
     :param endpoint:
-    :param provider:  (Default value = "ASF")
-    :param shortname:  (Default value = "OPERA_L2_RTC-S1_V1")
+    :returns: Two dictionaries - one mapping burst IDs to granule IDs, and another mapping burst IDs to sensing times.
 
     """
 
@@ -750,11 +750,11 @@ def map_cslc_bursts_to_frames(burst_ids, bursts_to_frames_file,
     :burst_ids: List of burst IDs to map.
     :bursts_to_frames_file: Path to the JSON file that maps bursts to frames.
     :frames_to_bursts_file: Path to the JSON file that maps frames to bursts.
-    :return: A DataFrame with columns for frame IDs, all possible bursts, their counts, matching bursts, and their counts.
 
-    :param burst_ids:
-    :param bursts_to_frames_file:
+    :param burst_ids: param bursts_to_frames_file:
     :param frames_to_bursts_file:
+    :param bursts_to_frames_file:
+    :returns: A DataFrame with columns for frame IDs, all possible bursts, their counts, matching bursts, and their counts.
 
     """
 
