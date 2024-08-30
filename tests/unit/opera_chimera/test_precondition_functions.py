@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-
 import json
 import os
 import tempfile
 import unittest
-from os.path import exists, join
-from unittest.mock import MagicMock, patch
+from os.path import exists
+from os.path import join
+from unittest.mock import MagicMock
+from unittest.mock import patch
 from zipfile import ZipFile
 
 import boto3.resources.collection

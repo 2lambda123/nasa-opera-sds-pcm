@@ -6,7 +6,6 @@ ecmwf_util.py
 Contains utility functions for working with ECMWF (Troposphere) weather files.
 
 """
-
 from datetime import datetime
 from urllib.parse import urlparse
 

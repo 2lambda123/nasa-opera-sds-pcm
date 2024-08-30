@@ -3,7 +3,6 @@ Class that contains the precondition evaluation steps used in the various PGEs
 that are part of the OPERA PCM pipeline.
 
 """
-
 import argparse
 import inspect
 import json
@@ -12,16 +11,18 @@ import re
 import traceback
 from datetime import datetime
 from pathlib import PurePath
-from typing import Dict, List
+from typing import Dict
+from typing import List
 from urllib.parse import urlparse
 
 import boto3
 from chimera.precondition_functions import PreConditionFunctions
 
 from commons.constants import product_metadata
-from commons.logger import LogLevels, logger
-from data_subscriber.cslc_utils import (parse_compressed_cslc_file_name,
-                                        parse_cslc_file_name)
+from commons.logger import logger
+from commons.logger import LogLevels
+from data_subscriber.cslc_utils import parse_compressed_cslc_file_name
+from data_subscriber.cslc_utils import parse_cslc_file_name
 from opera_chimera.constants.opera_chimera_const import \
     OperaChimeraConstants as oc_const
 from tools.stage_ancillary_map import main as stage_ancillary_map
@@ -30,10 +31,13 @@ from tools.stage_ionosphere_file import VALID_IONOSPHERE_TYPES
 from tools.stage_worldcover import main as stage_worldcover
 from util import datasets_json_util
 from util.common_util import get_working_dir
-from util.ecmwf_util import check_s3_for_ecmwf, ecmwf_key_for_datetime
+from util.ecmwf_util import check_s3_for_ecmwf
+from util.ecmwf_util import ecmwf_key_for_datetime
 from util.geo_util import bounding_box_from_slc_granule
-from util.pge_util import (download_object_from_s3, get_disk_usage,
-                           get_input_hls_dataset_tile_code, write_pge_metrics)
+from util.pge_util import download_object_from_s3
+from util.pge_util import get_disk_usage
+from util.pge_util import get_input_hls_dataset_tile_code
+from util.pge_util import write_pge_metrics
 
 
 class OperaPreConditionFunctions(PreConditionFunctions):
